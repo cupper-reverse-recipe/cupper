@@ -2,15 +2,26 @@
 
 ## Installation
 
-Download and install Cupper with the following command.
+Add this line to your application's Gemfile:
 
+```ruby
+gem 'cupper'
 ```
-gem install cupper
-```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install cupper
 
 ## Usage
 
+
 ## Development
 
-## License
+
+## Contributing
+
 

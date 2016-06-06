@@ -1,5 +1,5 @@
 require "cupper/version"
+require "cupper/config"
 
 module Cupper
-  # Your code goes here...
 end

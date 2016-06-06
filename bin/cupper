@@ -1,3 +1,43 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+
 require 'cupper'
+require 'optparse'
+
+# OptionParser is a built-in Ruby library that simplifies the process of
+#   taking arguments from users on the command-line.
+
+options = {}
+option_parser = OptionParser.new do |opts|
+  executable_name = File.basename($PROGRAM_NAME)
+  opts.banner = "
+    Cupper taste you environment and creates a cookbook for it
+
+    Usage: #{executable_name} [options] command
+  "
+  opts.on('-v','--version', 'Cupper version') do
+    options[:version] = true
+  end
+end
+
+begin
+  option_parser.parse!
+  rescue OptionParser::InvalidOption => error
+  puts "Cupper doesn't know that #{ error  }"
+  exit 1
+end
+
+if options[:version]
+  puts "Cupper #{Cupper::VERSION}" if options[:version]
+  exit 0
+end
+
+if ARGV.empty?
+  puts option_parser.help
+else
+  case ARGV[0]
+  when "init"
+    config = Cupper::Config.new
+  end
+end

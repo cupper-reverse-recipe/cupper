@@ -1,49 +1,70 @@
-# This module prepare the defaults files and directories that will be needed
+# This module prepare the Cupper project with the
+#   defaults files and dirs. All the files created are
+#   just samples and must to be changed by the user
 
 module Cupper
-  class Config
+  class Project
 
-    def file_content(file_name)
-      content = case file_name
-      when 'config.yaml' then "# Config file"
-      when 'nodes.yaml' then "# Nodes file"
+    def initialize(name)
+      @name = name
+      @dir = "#{Dir.getwd}/#{name}"
+      @subdirs = [
+        'cookbooks',
+      ]
+      @files = [
+        'CupperFile',
+      ]
+    end
+
+    def create()
+      if Dir.exist?(@dir)
+        puts "Project already exists or there is a directory with the same name"
+      else
+        create_dir
+        create_subdir
+        create_files
+      end
+    end
+
+    private
+
+    def create_dir
+      Dir.mkdir(@dir)
+      puts "[created] " + @name
+    end
+
+    def create_subdir
+      @subdirs.each do |subdir|
+        path = "#{@dir}/#{subdir}"
+        if Dir.exist?(path)
+          puts "[exists] " + subdir
+        else
+          Dir.mkdir(path)
+          puts "[created] " + subdir
+        end
+      end
+    end
+
+    def create_files
+      @files.each do |file|
+        path = "#{@dir}/#{file}"
+        if File.exists?(path)
+          puts "[exists] " + file
+        else
+          File.open(path, 'w') do |f|
+            f.puts file_content(file)
+          end
+          puts "[created] " + file
+        end
+      end
+    end
+
+    def file_content(file)
+      content = case file
+      when 'Cupperfile' then "# Cupper config file"
       else "# Invalid!"
       end
       return content
     end
-
-    def initialize
-      root = Dir.getwd
-      files=[
-        'config.yaml',
-        'nodes.yaml'
-      ]
-      dirs=[
-        'cookbooks',
-        'nodes',
-        'roles'
-      ]
-
-      files.each do |file|
-        if File.exists?(root+file)
-          puts "[exists] " + file
-        else
-          File.open(file, 'w') do |f|
-            f.puts file_content(file)
-          end
-          puts "[create] " + file
-        end
-      end
-
-      dirs.each do |dir|
-        if Dir.exist?(root+dir)
-          puts "[exists] " + dir
-        else
-          Dir.mkdir(dir)
-          puts "[create] " + dir
-        end
-      end
-    end
-
   end
 end

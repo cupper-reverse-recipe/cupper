@@ -4,6 +4,10 @@
 
 module Cupper
   class Project
+    attr_reader :name
+    attr_reader :dir
+    attr_reader :subdirs
+    attr_reader :files
 
     def initialize(name)
       @name = name
@@ -18,7 +22,7 @@ module Cupper
 
     def create()
       if Dir.exist?(@dir)
-        puts "Project already exists or there is a directory with the same name"
+        puts 'Fail: Project already exists or there is a directory with the same name'
       else
         create_dir
         create_subdir

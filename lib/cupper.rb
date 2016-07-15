@@ -1,5 +1,5 @@
 require "cupper/version"
-require "cupper/config"
+require "cupper/project"
 require "cupper/cli"
 
 module Cupper

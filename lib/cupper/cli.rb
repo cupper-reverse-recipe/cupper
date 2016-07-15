@@ -4,7 +4,7 @@
 #
 
 require 'thor'
-require 'cupper/config'
+require 'cupper/project'
 
 module Cupper
   class Cli < Thor

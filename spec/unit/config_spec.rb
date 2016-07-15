@@ -2,17 +2,14 @@ require 'spec_helper'
 require 'fileutils'
 
 describe Cupper::Project do
-
   before(:example) do
-    @project_name = "BETA"
+    @project_name = 'BETA'
     @project = Cupper::Project.new(@project_name)
   end
 
   # TODO: find a better way to do the generated dirs and files
   after(:example) do
-    if Dir.exist?(@project.dir)
-      FileUtils.rm_rf(@project.dir)
-    end
+    FileUtils.rm_rf(@project.dir) if Dir.exist?(@project.dir)
   end
 
   it 'should generate the root project dir' do

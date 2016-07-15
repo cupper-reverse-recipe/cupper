@@ -8,7 +8,7 @@ require 'cupper/project'
 
 module Cupper
   class Cli < Thor
-    desc "create [PROJECT_NAME]", "Create the project structure"
+    desc 'create [PROJECT_NAME]', 'Create the project structure'
     def create(project_name)
       project = Project.new(project_name)
       project.create

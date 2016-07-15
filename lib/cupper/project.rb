@@ -13,14 +13,14 @@ module Cupper
       @name = name
       @dir = "#{Dir.getwd}/#{name}"
       @subdirs = [
-        'cookbooks',
+        'cookbooks'
       ]
       @files = [
-        'CupperFile',
+        'CupperFile'
       ]
     end
 
-    def create()
+    def create
       if Dir.exist?(@dir)
         puts 'Fail: Project already exists or there is a directory with the same name'
       else
@@ -34,17 +34,17 @@ module Cupper
 
     def create_dir
       Dir.mkdir(@dir)
-      puts "[created] " + @name
+      puts '[created] ' + @name
     end
 
     def create_subdir
       @subdirs.each do |subdir|
         path = "#{@dir}/#{subdir}"
         if Dir.exist?(path)
-          puts "[exists] " + subdir
+          puts '[exists] ' + subdir
         else
           Dir.mkdir(path)
-          puts "[created] " + subdir
+          puts '[created] ' + subdir
         end
       end
     end
@@ -52,23 +52,23 @@ module Cupper
     def create_files
       @files.each do |file|
         path = "#{@dir}/#{file}"
-        if File.exists?(path)
-          puts "[exists] " + file
+        if File.exist?(path)
+          puts '[exists] ' + file
         else
           File.open(path, 'w') do |f|
             f.puts file_content(file)
           end
-          puts "[created] " + file
+          puts '[created] ' + file
         end
       end
     end
 
     def file_content(file)
       content = case file
-      when 'Cupperfile' then "# Cupper config file"
-      else "# Invalid!"
-      end
-      return content
+                when 'Cupperfile' then '# Cupper config file'
+                else '# Invalid!'
+                end
+      content
     end
   end
 end

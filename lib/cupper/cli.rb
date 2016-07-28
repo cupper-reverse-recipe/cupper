@@ -5,6 +5,7 @@
 
 require 'thor'
 require 'cupper/project'
+require 'cupper/ohai_plugins'
 
 module Cupper
   class Cli < Thor
@@ -12,6 +13,17 @@ module Cupper
     def create(project_name)
       project = Project.new(project_name)
       project.create
+    end
+
+    desc 'ohai', 'List Ohai plugins'
+    def ohai_plugins
+      ohai_plugins = OhaiPlugin.new
+      plugins = ohai_plugins.list_plugins
+      puts "Ohai Plugins"
+      puts "------------"
+      plugins.each do |plugin|
+        puts plugin
+      end
     end
   end
 end

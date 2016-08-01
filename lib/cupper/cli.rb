@@ -18,7 +18,7 @@ module Cupper
     desc 'ohai', 'List Ohai plugins'
     def ohai_plugins
       ohai_plugins = OhaiPlugin.new
-      plugins = ohai_plugins.list_plugins
+      plugins = ohai_plugins.list
       puts "Ohai Plugins"
       puts "------------"
       plugins.each do |plugin|

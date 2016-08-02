@@ -1,24 +1,26 @@
+require 'ohai'
+require 'cupper/ohai_plugins'
+
 module Cupper
   class Collect
-    require 'ohai'
-    require 'cupper/ohai_plugins'
 
-    def initializer
-      @datas_extraction = Hash.new("No data!")
+    attr_reader :data_extraction
+
+    def initialize
+      @data_extraction = Hash.new("No data!")
       @ohai = Ohai::System.new
-      @ohai_plugins = Cupper::OhaiPlugin.new
+      @ohai_plugin = OhaiPlugin.new
 
-      @plugins_path = File.expand_path 'plugins/ohai', __File__
+      @plugins_path = Cupper::OHAI_PLUGINS_PATH
       Ohai::Config[:plugin_path] << @plugins_path
     end
 
     def extract
-      plugins = @ohai_plugins.list
+      plugins = @ohai_plugin.list
       plugins.each do |plugin|
         extract = @ohai.all_plugins(plugin)
-        @datas_extraction = { plugin => extract.first.data } # Assuming that the first is the default plugin extractor
+        @data_extraction.update({ plugin => extract.first.data }) # Assuming that the first is the default plugin extractor
       end
-      @datas_extraction
     end
   end
 end

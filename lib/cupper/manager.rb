@@ -1,7 +1,7 @@
 require 'cupper/collect'
 
 module Cupper
-  class Genenrate
+  class Generator
     def initialize
       @collector = Collect.new
     end
@@ -10,4 +10,5 @@ module Cupper
       datas = @collector.extract_packages
     end
   end
+
 end

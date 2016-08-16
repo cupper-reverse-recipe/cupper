@@ -17,6 +17,7 @@ module Cupper
     end
 
     def extract_packages
+      self.extract
       packages = Array.new
       @data_extraction['packages']['packages'].each do |pkg|
         packages.push(pkg)

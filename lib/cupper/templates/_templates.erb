@@ -1,0 +1,11 @@
+# Template Session
+<% for @template in @templates %>
+
+template '<%= @template.name %>' do
+  source '<%= @template.source %>'
+  owner '<%= @template.owner %>'
+  group '<%= @template.group %>'
+  mode '<%= @template.mode %>'
+  notifies <%= @template.notifies %>
+end
+<% end %>

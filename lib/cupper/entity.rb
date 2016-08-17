@@ -7,13 +7,14 @@ module Cupper
     DIR = 'dir'
 
     # As default the Entity is treated as a file
-    def initialize(name, dest_path, type = nil, erb_file = nil)
+    def initialize(name, dest_path, type = nil, erb_file = nil, extension = '')
       @name = name
       @dest_path = dest_path
       @erb_file = erb_file
       @type = type.nil? ? FILE : type
+      @ext = extension
 
-      @full_path = "#{dest_path}/#{name}.rb"
+      @full_path = "#{@dest_path}/#{@name}#{@ext}"
     end
 
     # Create the actual file or dir in the correct place
@@ -29,6 +30,7 @@ module Cupper
     end
 
     def save
+      return false if self.exist?
       File.open(@full_path,"a+") { |f| f.write(self.render) } if self.file?
       Dir.mkdir(@full_path) if self.dir?
     end
@@ -44,6 +46,11 @@ module Cupper
     def dir?
       @type == DIR
     end
+
+    def exist?
+      File.exist?(@full_path) if self.file?
+      Dir.exist?(@full_path) if self.dir?
+    end
   end
 
   class Attribute
@@ -51,6 +58,7 @@ module Cupper
   end
 
   # Represents the recipe of the cookbook
+  # TODO: This is just a example, it's should be changed to another file
   class Recipe
     include Cupper::Entity
     def initialize(dest_path, type = nil, erb_file = nil)

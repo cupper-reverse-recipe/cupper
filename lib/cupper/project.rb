@@ -13,6 +13,7 @@ module Cupper
 
   class Project
     attr_reader :name
+    attr_reader :dir
 
     def initialize(project_name, directory = nil)
       @name = project_name

@@ -7,7 +7,7 @@ module Cupper
     DIR = 'dir'
 
     # As default the Entity is treated as a file
-    def initialize(name, dest_path, type = nil, erb_file = nil, extension = '')
+    def initialize(name, dest_path, erb_file = nil, type = nil, extension = '')
       @name = name
       @dest_path = dest_path
       @erb_file = erb_file

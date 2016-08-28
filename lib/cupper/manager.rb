@@ -1,14 +1,17 @@
 require 'cupper/collect'
+require 'cupper/recipe'
 
 module Cupper
-  class Generator
+  class Cookbook
+    # TODO: Read config file to tell the project path and configs
     def initialize
-      @collector = Collect.new
+      @cookbook_path    = Dir.getwd.concat '/cookbooks'
     end
 
-    def packages
-      datas = @collector.extract_packages
+    def generate
+      puts 'Generating Recipes ...'
+      recipe = Recipe.new(@cookbook_path, '_package')
+      recipe.create
     end
   end
-
 end

@@ -6,8 +6,8 @@ require 'cupper/entity'
 module Cupper
   class Structure
     include Entity
-    def initialize(name,dest_path, type = nil, erb_file = nil)
-      super(name, dest_path, type, erb_file)
+    def initialize(name,dest_path, erb_file = nil, type = nil)
+      super(name, dest_path, erb_file, type)
     end
   end
 
@@ -28,12 +28,12 @@ module Cupper
 
     def create
       # Root project directory
-      struct = Structure.new(@name, @dir, Entity::DIR)
+      struct = Structure.new(@name, @dir, nil, Entity::DIR)
       struct.create
 
       @subdirs.zip(@files).each do |dir, file|
-        Structure.new(dir, "#{@dir}/#{@name}", Entity::DIR).create
-        Structure.new(file, "#{@dir}/#{@name}", nil, file).create
+        Structure.new(dir, "#{@dir}/#{@name}", nil, Entity::DIR).create
+        Structure.new(file, "#{@dir}/#{@name}", file).create
       end
     end
   end

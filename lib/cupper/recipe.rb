@@ -13,7 +13,7 @@ module Cupper
       @links       = Array.new
       @directories  = Array.new
       @files       = Array.new
-      super('recipe',dest_path,erb_file,type)
+      super('recipe',dest_path,erb_file,type,'.rb')
     end
 
     def create

@@ -5,27 +5,48 @@ module Cupper
   class Recipe
     include Entity
     def initialize(dest_path, erb_file = nil, type = nil)
-      @packages   = Array.new
-      @services    = Array.new
-      @templates   = Array.new
-      @users       = Array.new
-      @execute    = Array.new
-      @links       = Array.new
+      @packages     = Array.new
+      @services     = Array.new
+      @templates    = Array.new
+      @users        = Array.new
+      @execute      = Array.new
+      @links        = Array.new
       @directories  = Array.new
-      @files       = Array.new
+      @files        = Array.new
       super('recipe',dest_path,erb_file,type,'.rb')
     end
 
     def create
       collector = Collect.new
-      @packages = expand(collector.extract 'packages')
+      @packages = expand_packages(collector.extract 'packages')
+      @links    = expand_links(collector.extract 'links')
       super
     end
 
-    def expand(attribute)
+    def expand_packages(packages)
       att = Array.new
-      attribute.each do |attr|
-        att.push(new_package(attr[0],attr[1]['version']))
+      packages.each do |attr|
+        pkg = attr[0]
+        version = attr[1]['version']
+
+        att.push(new_package(pkg,version))
+      end
+      att
+    end
+
+    def link?(file)
+      (file[1]['type'].split.first(2).join(' ').match('symbolic link'))
+    end
+
+    def expand_links(links)
+      att = Array.new
+      links.each do |attr|
+        if link?(attr)
+          target = attr[0]
+          to = attr[1]['type'].split.last(1).join
+
+          att.push(new_link(nil, nil, nil, target, to))
+        end
       end
       att
     end
@@ -53,6 +74,23 @@ module Cupper
       service
     end
 
+    def new_link(group, mode, owner, target_file, to)
+      link = Attribute.new
+      class << link
+        attr_accessor :group
+        attr_accessor :mode
+        attr_accessor :owner
+        attr_accessor :target_file
+        attr_accessor :to
+      end
+      link.group        = group
+      link.mode         = mode
+      link.owner        = owner
+      link.target_file  = target_file
+      link.to           = to
+      link
+    end
+
     def new_template(path, source, owner, group, mode)
     end
 
@@ -60,9 +98,6 @@ module Cupper
     end
     
     def new_execute(command)
-    end
-
-    def new_link(source, link_path)
     end
 
     def new_directory()

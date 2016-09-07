@@ -23,7 +23,7 @@ Ohai.plugin(:Files) do
     files Mash.new
     extract_files.each do |file|
       path, type = file.split(' ', 2)
-      files[path] = {
+      files[path.chomp(':')] = {
         'type' => type
       }
     end

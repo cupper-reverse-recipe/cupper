@@ -1,0 +1,7 @@
+# Links Session
+
+<% for @link in @links %>
+link '<%= @link.target_file %>' do
+  to '<%= @link.to %>'
+end
+<% end %>

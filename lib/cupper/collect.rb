@@ -98,6 +98,14 @@ module Cupper
       end
       packages
     end
+
+    def links(data_extraction)
+      links = Array.new
+      data_extraction['files']['files'].each do |file|
+        links.push(file)
+      end
+      links
+    end
   end
 
   class Arch

@@ -1,8 +1,9 @@
+require "pathname"
 require "cupper/cupperfile"
 require "cupper/version"
 
 module Cupper
-  class Enviroment
+  class Environment
     # The `cwd` that this environment represents
     attr_reader :cwd
 
@@ -58,14 +59,6 @@ module Cupper
       @cwd              = opts[:cwd]
       @cupperfile_name = opts[:cupperfile_name]
 
-      # This is the batch lock, that enforces that only one {BatchAction}
-      # runs at a time from {#batch}.
-
-      @logger = Log4r::Logger.new("cupper::environment")
-      @logger.info("Environment initialized (#{self})")
-      @logger.info("  - cwd: #{cwd}")
-
-
 
       # Run checkpoint in a background thread on every environment
       # initialization. The cache file will cause this to mostly be a no-op
@@ -73,17 +66,10 @@ module Cupper
       @checkpoint_thr = Thread.new do
         Thread.current[:result] = nil
 
-        # If we disabled checkpoint via env var, don't run this
-        if ENV["cupper_CHECKPOINT_DISABLE"].to_s != ""
-          @logger.info("checkpoint: disabled from env var")
-          next
-        end
-
         # If we disabled state and knowing what alerts we've seen, then
         # disable the signature file.
         signature_file = @data_dir.join("checkpoint_signature")
         if ENV["cupper_CHECKPOINT_NO_STATE"].to_s != ""
-          @logger.info("checkpoint: will not store state")
           signature_file = nil
         end
 
@@ -108,21 +94,9 @@ module Cupper
       if opts[:local_data_path]
         @local_data_path = Pathname.new(File.expand_path(opts[:local_data_path], @cwd))
       end
-      @logger.debug("Effective local data path: #{@local_data_path}")
-
 
       setup_local_data_path
 
-      # Setup the default private key
-      @default_private_key_path = @home_path.join("insecure_private_key")
-      copy_insecure_private_key
-
-      # Call the hooks that does not require configurations to be loaded
-      # by using a "clean" action runner
-      hook(:environment_plugins_loaded, runner: Action::Runner.new(env: self))
-
-      # Call the environment load hooks
-      hook(:environment_load, runner: Action::Runner.new(env: self))
     end
 
     # Return a human-friendly string for pretty printed or inspected
@@ -134,25 +108,11 @@ module Cupper
     end
 
     def setup_local_data_path(force=false)
-      if @local_data_path.nil?
-        @logger.warn("No local data path is set. Local data cannot be stored.")
-        return
-      end
-
-      @logger.info("Local data path: #{@local_data_path}")
-
-      # If the local data path is a file, then we are probably seeing an
-      # old (V1) "dotfile." In this case, we upgrade it. The upgrade process
-      # will remove the old data file if it is successful.
-      if @local_data_path.file?
-        upgrade_v1_dotfile(@local_data_path)
-      end
 
       # If we don't have a root path, we don't setup anything
       return if !force && root_path.nil?
 
       begin
-        @logger.debug("Creating: #{@local_data_path}")
         FileUtils.mkdir_p(@local_data_path)
       rescue Errno::EACCES
         raise Errors::LocalDataDirectoryNotAccessible,
@@ -191,7 +151,6 @@ module Cupper
     end
 
     def hook(name, opts=nil)
-      @logger.info("Running hook: #{name}")
       opts ||= {}
       opts[:callable] ||= Action::Builder.new
       opts[:runner] ||= action_runner

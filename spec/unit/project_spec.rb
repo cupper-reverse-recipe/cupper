@@ -3,7 +3,7 @@ require 'fileutils'
 
 describe Cupper::Project do
   let(:test_path) do
-    File.expand_path(File.dirname __FILE__) + "/project_test"
+    File.expand_path(File.dirname __FILE__) + '/project_test'
   end
 
   let(:project) do

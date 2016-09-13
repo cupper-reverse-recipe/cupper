@@ -51,6 +51,10 @@ module Cupper
       File.exist?(@full_path) if self.file?
       Dir.exist?(@full_path) if self.dir?
     end
+
+    def full_path
+      @full_path
+    end
   end
 
   class Attribute

@@ -38,14 +38,32 @@ module Cupper
       (file[1]['type'].split.first(2).join(' ').match('symbolic link'))
     end
 
+    def converte_mode(mode)
+      # This abord the commons modes for files
+      return 'ERROR' if not mode
+      result = case mode.split('').last(9).join
+               when 'rwxrwxrwx' then '777'
+               when 'rwxr-xr-x' then '755'
+               when 'rwx------' then '700'
+               when 'rw-rw-rw-' then '666'
+               when 'rw-r--r--' then '644'
+               when 'rw-------' then '600'
+               else 'Unknown'
+               end
+      result
+    end
+
     def expand_links(links)
       att = Array.new
       links.each do |attr|
         if link?(attr)
           target = attr[0]
           to = attr[1]['type'].split.last(1).join
+          group = attr[1]['group']
+          mode = attr[1]['mode']
+          owner = attr[1]['owner']
 
-          att.push(new_link(nil, nil, nil, target, to))
+          att.push(new_link(group, converte_mode(mode), owner, target, to))
         end
       end
       att

@@ -19,12 +19,17 @@ Ohai.plugin(:Files) do
     result
   end
 
+
   collect_data(:linux) do
     files Mash.new
     extract_files.each do |file|
       path, type = file.split(' ', 2)
+      mode, null, owner, group, null = shell_out('ls -al ' + path.chomp(':')).stdout.split(' ',5)
       files[path.chomp(':')] = {
-        'type' => type
+        'type' => type,
+        'mode' => converte_mode(mode),
+        'owner' => owner,
+        'group' => group
       }
     end
   end

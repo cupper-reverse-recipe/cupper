@@ -47,6 +47,7 @@ module Cupper
         raise Errors::EnvironmentNonExistentCWD, cwd: opts[:cwd].to_s
       end
       opts[:cwd] = opts[:cwd].expand_path
+      opts[:cupperfile_name] = 'Cupperfile'
 
       # Set the Cupperfile name up. We append "Cupperfile" and "cupperfile" so that
       # those continue to work as well, but anything custom will take precedence.
@@ -81,22 +82,6 @@ module Cupper
         )
       end
 
-      # Setup the local data directory. If a configuration path is given,
-      # it is expanded relative to the root path. Otherwise, we use the
-      # default (which is also expanded relative to the root path).
-      if !root_path.nil?
-        if !(ENV["cupper_DOTFILE_PATH"] or "").empty? && !opts[:child]
-          opts[:local_data_path] ||= root_path.join(ENV["cupper_DOTFILE_PATH"])
-        else
-          opts[:local_data_path] ||= root_path.join(DEFAULT_LOCAL_DATA)
-        end
-      end
-      if opts[:local_data_path]
-        @local_data_path = Pathname.new(File.expand_path(opts[:local_data_path], @cwd))
-      end
-
-      setup_local_data_path
-
     end
 
     # Return a human-friendly string for pretty printed or inspected
@@ -105,19 +90,6 @@ module Cupper
     # @return [String]
     def inspect
       "#<#{self.class}: #{@cwd}>".encode('external')
-    end
-
-    def setup_local_data_path(force=false)
-
-      # If we don't have a root path, we don't setup anything
-      return if !force && root_path.nil?
-
-      begin
-        FileUtils.mkdir_p(@local_data_path)
-      rescue Errno::EACCES
-        raise Errors::LocalDataDirectoryNotAccessible,
-          local_data_path: @local_data_path.to_s
-      end
     end
 
     def config_loader

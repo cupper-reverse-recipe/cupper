@@ -1,6 +1,7 @@
 require "pathname"
 require "cupper/cupperfile"
 require "cupper/version"
+require 'colorize'
 
 module Cupper
   class Environment
@@ -26,6 +27,14 @@ module Cupper
 
     # The path where the plugins are stored (gems)
     attr_reader :gems_path
+
+    def test_env(ex, root_path)
+      begin
+        raise ex if !root_path 
+      rescue ex => ex
+        puts "#{ex.message}".red
+      end
+    end
 
     # Initializes a new environment with the given options. The options
     # is a hash where the main available key is `cwd`, which defines where

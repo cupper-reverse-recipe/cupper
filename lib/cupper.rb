@@ -1,5 +1,4 @@
-require "cupper/version"
-
-module Cupper
-  # Your code goes here...
-end
+require 'cupper/version'
+require 'cupper/project'
+require 'cupper/cli'
+require 'cupper/ohai_plugins'

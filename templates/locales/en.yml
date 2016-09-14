@@ -1,0 +1,17 @@
+en:
+  cupper:
+    errors:
+      no_env: |-
+        A Cupper environment is required to run this command. Run `cupper init`
+        to create a new Cupper environment. A final option is to change to a 
+        directory with a Cupperfile and to try again.
+      environment_non_existent_cwd: |-
+        The working directory for cupper doesn't exist! This is the
+        specified working directory.
+        
+        %{cwd}
+      local_data_dir_not_accessible: |-
+        The directory cupper will use to store local environment-specific
+        state is not accessible. The directory specified as the local data
+        directory must be both readable and writable for the user that is
+        running cupper.

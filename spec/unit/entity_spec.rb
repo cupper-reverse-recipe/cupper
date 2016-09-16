@@ -61,6 +61,7 @@ describe Cupper::Entity do
   end
 
   it 'should exist' do
+    File.new(entity.full_path,'w')
     expect(entity.exist?).to be_truthy
   end
 

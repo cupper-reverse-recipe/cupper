@@ -24,6 +24,6 @@ describe Cupper::OhaiPlugin do
     File.new(test_path + '/plugin1.rb','w')
     File.new(test_path + '/plugin2.rb','w')
     File.new(test_path + '/plugin3.rb','w')
-    expect(ohai_plugin.list).to eq(['plugin2','plugin3','plugin1']) # TODO: the list is returning out of order
+    expect(ohai_plugin.list).to eq(['plugin1','plugin2','plugin3']) # TODO: the list is returning out of order in some case
   end
 end

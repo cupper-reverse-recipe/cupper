@@ -38,7 +38,7 @@ module Cupper
       (file[1]['type'].split.first(2).join(' ').match('symbolic link'))
     end
 
-    def converte_mode(mode)
+    def convert_mode(mode)
       # This abord the commons modes for files
       return 'ERROR' if not mode
       result = case mode.split('').last(9).join
@@ -63,7 +63,7 @@ module Cupper
           mode = attr[1]['mode']
           owner = attr[1]['owner']
 
-          att.push(new_link(group, converte_mode(mode), owner, target, to))
+          att.push(new_link(group, convert_mode(mode), owner, target, to))
         end
       end
       att
@@ -102,7 +102,7 @@ module Cupper
         attr_accessor :to
       end
       link.group        = group
-      link.mode         = mode
+      link.mode         = convert_mode(mode)
       link.owner        = owner
       link.target_file  = target_file
       link.to           = to

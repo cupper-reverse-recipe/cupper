@@ -27,7 +27,7 @@ Ohai.plugin(:Files) do
       mode, null, owner, group, null = shell_out('ls -al ' + path.chomp(':')).stdout.split(' ',5)
       files[path.chomp(':')] = {
         'type' => type,
-        'mode' => converte_mode(mode),
+        'mode' => mode,
         'owner' => owner,
         'group' => group
       }

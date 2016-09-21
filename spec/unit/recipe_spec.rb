@@ -65,8 +65,35 @@ describe Cupper::Recipe do
     expect(rt_false).not_to be_truthy
   end
 
-  it 'should converte the notation of mode to the number notation'
-  it 'should create a new package using attribute class'
-  it 'should create a new service using attribute class'
-  it 'should create a new link using attribute class'
+  it 'should converte the notation of mode to the number notation' do
+    expect(recipe.convert_mode 'rwxrwxrwx').to eq('777')
+    expect(recipe.convert_mode 'rwxr-xr-x').to eq('755')
+    expect(recipe.convert_mode 'rwx------').to eq('700')
+    expect(recipe.convert_mode 'rw-rw-rw-').to eq('666')
+    expect(recipe.convert_mode 'rw-r--r--').to eq('644')
+    expect(recipe.convert_mode 'rw-------').to eq('600')
+    expect(recipe.convert_mode 'invalid').to eq('Unknown')
+  end
+
+  it 'should create a new package using attribute class' do
+    new_pkg = recipe.new_package('box','0.0.0')
+    expect(new_pkg).to be_a(Cupper::Attribute)
+    expect(new_pkg).to have_attributes(:name => 'box', :version => '0.0.0')
+  end
+
+  it 'should create a new service using attribute class' do
+    new_service = recipe.new_service('nginx', 'install')
+    expect(new_service).to be_a(Cupper::Attribute)
+    expect(new_service).to have_attributes(:name => 'nginx', :action => 'install')
+  end
+
+  it 'should create a new link using attribute class' do
+    new_link = recipe.new_link('root', 'rw-r--r--', 'root', '/etc/config', '/etc/file')
+    expect(new_link).to be_a(Cupper::Attribute)
+    expect(new_link).to have_attributes(:group => 'root',
+                                        :mode  => '644',
+                                        :owner => 'root',
+                                        :target_file => '/etc/config',
+                                        :to => '/etc/file')
+  end
 end

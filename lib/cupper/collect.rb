@@ -17,7 +17,6 @@ module Cupper
       # TODO: Ohai::Config[:plugin_path] is decrepted
       @plugins_path = Cupper::OHAI_PLUGINS_PATH
       Ohai::Config[:plugin_path] << @plugins_path
-      self.setup
     end
 
     def extract(attribute)

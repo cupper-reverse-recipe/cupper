@@ -18,6 +18,7 @@ module Cupper
 
     def create
       collector = Collect.new
+      collector.setup
       @packages = expand_packages(collector.extract 'packages')
       @links    = expand_links(collector.extract 'links')
       super

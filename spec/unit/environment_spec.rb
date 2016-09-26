@@ -13,5 +13,11 @@ describe Cupper::Environment do
     expect(env.root_path).to be(nil)
   end
 
+  it 'should have a valid env with a Cupperfile' do
+    allow(File).to receive(:exist?).and_return(true)
+    allow(env).to receive(:find_cupperfile).and_return(Pathname.new(Dir.pwd))
+    expect(env.root_path).to eq(Pathname.new(Dir.pwd))
+  end
+
 
 end

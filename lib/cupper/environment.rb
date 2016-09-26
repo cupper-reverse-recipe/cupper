@@ -28,7 +28,7 @@ module Cupper
     # The path where the plugins are stored (gems)
     attr_reader :gems_path
 
-    def test_env(ex, root_path)
+    def check_env(ex, root_path)
       begin
         raise ex if !root_path 
       rescue ex => ex

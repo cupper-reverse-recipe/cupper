@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'thor'
+gem 'i18n'
+gem 'colorize'
 gem 'coveralls', require: false
 
 group :development do

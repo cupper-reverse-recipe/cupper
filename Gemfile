@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in cupper.gemspec
 gemspec
 
+gem 'ohai'
 gem 'thor'
 gem 'i18n'
 gem 'colorize'

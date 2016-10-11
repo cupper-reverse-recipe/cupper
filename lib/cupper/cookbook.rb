@@ -10,7 +10,7 @@ module Cupper
 
     def generate
       puts 'Generating Recipes ...'
-      recipe = Recipe.new(@cookbook_path, '_links')
+      recipe = Recipe.new(@cookbook_path, '_cookbook_file')
       recipe.create
     end
   end

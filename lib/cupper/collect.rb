@@ -103,12 +103,12 @@ module Cupper
       packages
     end
 
-    def links(data_extraction)
-      links = Array.new
+    def files(data_extraction)
+      files = Array.new
       data_extraction['files']['files'].each do |file|
-        links.push(file)
+        files.push(file)
       end
-      links
+      files
     end
 
     def services(data_extraction)
@@ -143,12 +143,12 @@ module Cupper
       packages
     end
 
-    def links(data_extraction)
-      links = Array.new
+    def files(data_extraction)
+      files = Array.new
       data_extraction['files']['files'].each do |file|
-        links.push(file)
+        files.push(file)
       end
-      links
+      files
     end
 
     def services(data_extraction)

@@ -21,10 +21,11 @@ module Cupper
       collector = Collect.new
       collector.setup
       @packages = expand_packages(collector.extract 'packages')
-      @links    = expand_links(collector.extract 'links')
       @services = expand_services(collector.extract 'services')
       @users    = expand_users(collector.extract 'users')
       @groups   = expand_groups(collector.extract 'groups')
+      @links    = expand_links(collector.extract 'files')
+      @files    = expand_files(collector.extract 'files')
       super
     end
 
@@ -111,6 +112,21 @@ module Cupper
       att
     end
 
+    def expand_files(files)
+      att = Array.new
+      files.each do |attr|
+        unless link?(attr)
+          target = attr[0]
+          group = attr[1]['group']
+          mode = attr[1]['mode']
+          owner = attr[1]['owner']
+
+          att.push(new_file(group, convert_mode(mode), owner))
+        end
+      end
+      att
+    end
+
     # Every attribute object is created dynamic
     def new_package(name, version)
       package = Attribute.new
@@ -144,7 +160,7 @@ module Cupper
         attr_accessor :to
       end
       link.group        = group
-      link.mode         = convert_mode(mode)
+      link.mode         = mode
       link.owner        = owner
       link.target_file  = target_file
       link.to           = to
@@ -190,7 +206,21 @@ module Cupper
     def new_directory()
     end
 
-    def new_file()
+    def new_file(group, mode, owner)
+      file = Attribute.new
+      class << file
+        attr_accessor :path
+        attr_accessor :source
+        attr_accessor :group
+        attr_accessor :mode
+        attr_accessor :owner
+      end
+      file.path         = 'path'
+      file.source       = 'source'
+      file.group        = group
+      file.mode         = mode
+      file.owner        = owner
+      file
     end
   end
 end

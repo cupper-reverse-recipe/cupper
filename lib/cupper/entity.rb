@@ -30,9 +30,8 @@ module Cupper
     end
 
     def save
-      return false if self.exist?
       File.open(@full_path,"a+") { |f| f.write(self.render) } if self.file?
-      Dir.mkdir(@full_path) if self.dir?
+      Dir.mkdir(@full_path) if self.dir? && !(self.exist?)
     end
 
     def render

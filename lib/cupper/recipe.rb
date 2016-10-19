@@ -40,8 +40,12 @@ module Cupper
       att
     end
 
-    def link?(file)
+    def link_type?(file)
       (file[1]['type'].split.first(2).join(' ').match('symbolic link'))
+    end
+
+    def dir_type?(file)
+      file[1]['type'].match('directory')
     end
 
     def convert_mode(mode)
@@ -73,14 +77,14 @@ module Cupper
     def expand_links(links)
       att = Array.new
       links.each do |attr|
-        if link?(attr)
+        if link_type?(attr)
           target = attr[0]
           to = attr[1]['type'].split.last(1).join
           group = attr[1]['group']
           mode = attr[1]['mode']
           owner = attr[1]['owner']
 
-          att.push(new_link(group, convert_mode(mode), owner, target, to))
+          att.push(new_link(group, mode, owner, target, to))
         end
       end
       att
@@ -115,13 +119,13 @@ module Cupper
     def expand_files(files)
       att = Array.new
       files.each do |attr|
-        unless link?(attr)
-          target = attr[0]
+        if not dir_type?(attr)
           group = attr[1]['group']
           mode = attr[1]['mode']
           owner = attr[1]['owner']
+          path = attr[1]['path']
 
-          att.push(new_file(group, convert_mode(mode), owner))
+          att.push(new_file(group, mode, owner, path))
         end
       end
       att
@@ -160,7 +164,7 @@ module Cupper
         attr_accessor :to
       end
       link.group        = group
-      link.mode         = mode
+      link.mode         = convert_mode(mode)
       link.owner        = owner
       link.target_file  = target_file
       link.to           = to
@@ -206,7 +210,7 @@ module Cupper
     def new_directory()
     end
 
-    def new_file(group, mode, owner)
+    def new_file(group, mode, owner, path, source='')
       file = Attribute.new
       class << file
         attr_accessor :path
@@ -215,10 +219,10 @@ module Cupper
         attr_accessor :mode
         attr_accessor :owner
       end
-      file.path         = 'path'
-      file.source       = 'source'
+      file.path         = path
+      file.source       = source
       file.group        = group
-      file.mode         = mode
+      file.mode         = convert_mode(mode)
       file.owner        = owner
       file
     end

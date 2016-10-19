@@ -2,7 +2,6 @@
 
 <% for @cbf in @files %>
 cookbook_file '<%= @cbf.path %>'
-  source '<%= @cbf.source %>'
   owner '<%= @cbf.owner %>'
   group '<%= @cbf.group %>'
   mode '<%= @cbf.mode %>'

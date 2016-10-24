@@ -6,6 +6,11 @@ Ohai.plugin(:Files) do
     so.stdout.lines
   end
 
+  def has_related_package?(file)
+    related = shell_out("dpkg -S #{file}")
+    !(related.match('no path found matching pattern'))
+  end
+
   def extract_files
     subdir = true
     cmd = 'file /etc/**'
@@ -19,19 +24,22 @@ Ohai.plugin(:Files) do
     result
   end
 
-
   collect_data(:linux) do
     files Mash.new
     extract_files.each do |file|
-      path, type = file.split(' ', 2)
-      mode, null, owner, group, null = shell_out('ls -al ' + path.chomp(':')).stdout.split(' ',5)
-      files[path.chomp(':')] = {
-        'path' => path,
-        'type' => type,
-        'mode' => mode,
-        'owner' => owner,
-        'group' => group
-      }
+      if has_related_package?(file)
+        path, type = file.split(' ', 2)
+        path.chomp!(':')
+        mode, null, owner, group, null = shell_out("ls -al #{path}").stdout.split(' ',5)
+        content = shell_out("cat #{path}")
+        files[path] = {
+          'type' => type,
+          'mode' => mode,
+          'owner' => owner,
+          'group' => group,
+          'content' => content
+        }
+      end
     end
   end
 end

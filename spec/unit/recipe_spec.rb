@@ -7,8 +7,12 @@ describe Cupper::Recipe do
     File.expand_path(File.dirname __FILE__) + '/project_test'
   end
 
+  let(:collector) do
+    Cupper::Collect.new
+  end
+
   let(:recipe) do
-    Cupper::Recipe.new(test_path)
+    Cupper::Recipe.new(test_path,collector)
   end
 
   let(:extracted_packages) do

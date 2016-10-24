@@ -26,7 +26,7 @@ module Cupper
     # Returns the content of the file
     def content(erb_file)
       return false if self.dir?
-      @template = File.read(TEMPLATE_PATH + "/#{erb_file}.erb")
+      @template = File.read("#{TEMPLATE_PATH}/#{erb_file}.erb")
     end
 
     def save

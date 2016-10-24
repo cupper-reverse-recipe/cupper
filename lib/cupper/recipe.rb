@@ -1,10 +1,9 @@
 
 module Cupper
   # Represents the recipe of the cookbook
-  # TODO: This is just a example, it's should be changed to another file
   class Recipe
     include Entity
-    def initialize(dest_path, erb_file = nil, type = nil)
+    def initialize(dest_path, collector, erb_file = nil, type = nil)
       @packages     = Array.new
       @services     = Array.new
       @templates    = Array.new
@@ -14,12 +13,11 @@ module Cupper
       @links        = Array.new
       @directories  = Array.new
       @files        = Array.new
+      @collector    = collector
       super('recipe',dest_path,erb_file,type,'.rb')
     end
 
     def create
-      collector = Collect.new
-      collector.setup
       @packages = expand_packages(collector.extract 'packages')
       @services = expand_services(collector.extract 'services')
       @users    = expand_users(collector.extract 'users')
@@ -46,6 +44,10 @@ module Cupper
 
     def dir_type?(file)
       file[1]['type'].match('directory')
+    end
+
+    def text_type?(file)
+      file[1]['type'].match('text') or file[1]['type'].match('ASCII')
     end
 
     def convert_mode(mode)
@@ -119,11 +121,11 @@ module Cupper
     def expand_files(files)
       att = Array.new
       files.each do |attr|
-        if not dir_type?(attr)
+        if text_type?(attr)
+          path = attr[0]
           group = attr[1]['group']
           mode = attr[1]['mode']
           owner = attr[1]['owner']
-          path = attr[1]['path']
 
           att.push(new_file(group, mode, owner, path))
         end

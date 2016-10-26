@@ -6,7 +6,8 @@ module Cupper
 
     ADDITIONAL_OHAI_PLUGINS = [
       'packages',
-      'platform_family'
+      'platform_family',
+      'passwd'
     ]
 
     def initialize
@@ -112,6 +113,13 @@ module Cupper
         services.push(service)
       end
     end
+
+    def users(data_extraction)
+      users = Array.new
+      data_extraction['passwd']['current_user'].each do |user|
+        users.push(user)
+      end
+    end
   end
 
   class Arch
@@ -139,5 +147,11 @@ module Cupper
       end
     end
 
+    def users(data_extraction)
+      users = Array.new
+      data_extraction['passwd']['current_user'].each do |user|
+        users.push(user)
+      end
+    end
   end
 end

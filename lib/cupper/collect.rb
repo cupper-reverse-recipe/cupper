@@ -105,6 +105,13 @@ module Cupper
       end
       links
     end
+
+    def services(data_extraction)
+      services = Array.new
+      data_extraction['services']['services'].each do |service|
+        services.push(service)
+      end
+    end
   end
 
   class Arch
@@ -124,5 +131,13 @@ module Cupper
       end
       links
     end
+
+    def services(data_extraction)
+      services = Array.new
+      data_extraction['services']['services'].each do |service|
+        services.push(service)
+      end
+    end
+
   end
 end

@@ -19,8 +19,9 @@ module Cupper
     def create
       collector = Collect.new
       collector.setup
-      @packages = expand_packages(collector.extract 'packages')
-      @links    = expand_links(collector.extract 'links')
+      #@packages = expand_packages(collector.extract 'packages')
+      #@links    = expand_links(collector.extract 'links')
+      @services = expand_services(collector.extract 'services')
       super
     end
 
@@ -52,6 +53,17 @@ module Cupper
                else 'Unknown'
                end
       result
+    end
+
+    def expand_services(services)
+      att = Array.new
+      services.each do |attr|
+        srv = attr[0]
+        action = attr[1]['action']
+
+        att.push(new_service(srv,action))
+      end
+      att
     end
 
     def expand_links(links)

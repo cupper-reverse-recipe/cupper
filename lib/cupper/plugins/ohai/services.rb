@@ -11,8 +11,7 @@ Ohai.plugin(:Services) do
     srvs from_cmd('systemctl list-units | grep loaded | grep active | grep running')
 
     srvs.each do |srv|
-      name = from_cmd("echo '#{srv}' | cut -d' ' -f 3")
-      puts name*80
+      name = srv.split.first
       services[name] = {
         "action" => 'restart',
       }

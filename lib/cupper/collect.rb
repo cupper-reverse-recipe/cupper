@@ -7,7 +7,7 @@ module Cupper
     ADDITIONAL_OHAI_PLUGINS = [
       'packages',
       'platform_family',
-      'passwd'
+      'etc'
     ]
 
     def initialize
@@ -116,7 +116,7 @@ module Cupper
 
     def users(data_extraction)
       users = Array.new
-      data_extraction['passwd']['current_user'].each do |user|
+      data_extraction['etc']['passwd'].each do |user|
         users.push(user)
       end
     end
@@ -149,7 +149,7 @@ module Cupper
 
     def users(data_extraction)
       users = Array.new
-      data_extraction['passwd']['current_user'].each do |user|
+      data_extraction['etc']['passwd'].each do |user|
         users.push(user)
       end
     end

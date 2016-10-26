@@ -1,0 +1,10 @@
+# User session
+
+<% for @user in @users %>
+user 'a user' do
+  uid '<%= @user.uid%>' 
+  gid '<%= @user.gid%>'
+  home '<%= @user.dir%>'
+  shell '<%= @user.shell%>'
+end
+<% end %>

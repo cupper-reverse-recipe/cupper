@@ -7,8 +7,21 @@ Ohai.plugin(:Files) do
   end
 
   def has_related_package?(file)
-    related = shell_out("dpkg -S #{file}")
-    !(related.match('no path found matching pattern'))
+    related = shell_out("dpkg -S #{file}").stdout.chomp
+    !(related.empty?)
+  end
+
+  def related_to(file)
+    pkg, null = shell_out("dpkg -S #{file}").stdout.chomp.split(' ', 2)
+    pkg.chomp!(':')
+  end
+
+  def file_content(file)
+    shell_out("cat #{file}").stdout
+  end
+
+  def add_info(file)
+    shell_out("ls -al #{file}").stdout.split(' ',5)
   end
 
   def extract_files
@@ -27,19 +40,20 @@ Ohai.plugin(:Files) do
   collect_data(:linux) do
     files Mash.new
     extract_files.each do |file|
-      if has_related_package?(file)
-        path, type = file.split(' ', 2)
-        path.chomp!(':')
-        mode, null, owner, group, null = shell_out("ls -al #{path}").stdout.split(' ',5)
-        content = shell_out("cat #{path}")
-        files[path] = {
-          'type' => type,
-          'mode' => mode,
-          'owner' => owner,
-          'group' => group,
-          'content' => content
-        }
-      end
+      path, type = file.split(' ', 2)
+      type.chomp!
+      path.chomp!(':')
+      mode, null, owner, group, null = add_info(path)
+      rel = related_to(path) if has_related_package?(path)
+      content = file_content(path)
+      files[path] = {
+        'type' => type,
+        'mode' => mode,
+        'owner' => owner,
+        'group' => group,
+        'related' => rel,
+        'content' => content
+      }
     end
   end
 end

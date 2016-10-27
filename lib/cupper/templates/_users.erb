@@ -1,7 +1,7 @@
 # User session
 
 <% for @user in @users %>
-user 'a user' do
+user '<%= @user.name%>' do
   uid '<%= @user.uid%>' 
   gid '<%= @user.gid%>'
   home '<%= @user.dir%>'

@@ -116,7 +116,7 @@ module Cupper
 
     def users(data_extraction)
       users = Array.new
-      data_extraction['etc']['etc'].each do |user|
+      data_extraction['etc']['etc']['passwd'].each do |user|
         users.push(user)
       end
     end

@@ -1,5 +1,6 @@
 Ohai.plugin(:Files) do
   provides 'files'
+  depends 'platform_family'
 
   def from_cmd(cmd)
     so = shell_out(cmd)
@@ -7,13 +8,21 @@ Ohai.plugin(:Files) do
   end
 
   def has_related_package?(file)
-    related = shell_out("dpkg -S #{file}").stdout.chomp
+    if %w{debian}.include? platform_family
+      related = shell_out("dpkg -S #{file}").stdout.chomp
+    elsif %w{arch}.include? platform_family
+      related = shell_out("pacman -Qo #{file}").stdout.chomp
+    end
     !(related.empty?)
   end
 
   def related_to(file)
-    pkg, null = shell_out("dpkg -S #{file}").stdout.chomp.split(' ', 2)
-    pkg.chomp!(':')
+    if %w{debian}.include? platform_family
+      pkg, null = shell_out("dpkg -S #{file}").stdout.chomp.split(' ', 2)
+      pkg.chomp!(':')
+    elsif %w{arch}.include? platform_family
+      pkg = shell_out("pacman -Qo #{file}").stdout.chomp.split[4]
+    end
   end
 
   def file_content(file)

@@ -15,10 +15,8 @@ Ohai.plugin(:PkgDeps) do
 
   def extract_dependecies(pkg)
     pkg_infos = from_cmd("apt-cache showpkg #{pkg}")
-    deps_pos = pkg_infos.index{ |id| id =~ /Dependencies/}
-    pkg_infos[deps_pos+1].split.delete_if { |item|
-      item.match(/(^\(\d)|(^\d*\))|(\(null\))|(^\d*-)|(^\d*~\))|(^\d*:)|(^\d*\.)|(^-)/)
-    }
+    pkg_infos.keep_if { |item| item.strip!.match(/^Depends:/)}
+    pkg_infos.each { |item| item.slice!("Depends: ") }
   end
 
   collect_data(:linux) do

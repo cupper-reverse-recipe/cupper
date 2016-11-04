@@ -38,7 +38,7 @@ module Cupper
 
     def expand_cookbook_files(files)
       files.each do |attr|
-        if text_type?(attr)
+        if text_type?(attr) and !(attr[1]['related'].nil?)
           source = attr[0].split('/').last
           content = attr[1]['content']
           cbf = CookbookFile.new(@cookbook_files_path, source, content, 'cookbook_file')

@@ -121,7 +121,7 @@ module Cupper
     def expand_files(files)
       att = Array.new
       files.each do |attr|
-        if text_type?(attr)
+        if text_type?(attr) and !(attr[1]['related'].nil?)
           path = attr[0]
           group = attr[1]['group']
           mode = attr[1]['mode']

@@ -22,6 +22,7 @@ module Cupper
       @packages = expand_packages(collector.extract 'packages')
       @links    = expand_links(collector.extract 'links')
       @services = expand_services(collector.extract 'services')
+      @users    = expand_users(collector.extract 'users')
       super
     end
 
@@ -82,6 +83,20 @@ module Cupper
       att
     end
 
+    def expand_users(users)
+      att = Array.new
+      users.each do |attr|
+        usr = attr[0]
+        uid = attr[1]['uid']
+        gid = attr[1]['gid']
+        dir = attr[1]['dir']
+        shell = attr[1]['shell']
+
+        att.push(new_user(usr, uid, gid, dir, shell))
+      end
+      att
+    end
+
     # Every attribute object is created dynamic
     def new_package(name, version)
       package = Attribute.new
@@ -125,7 +140,21 @@ module Cupper
     def new_template(path, source, owner, group, mode)
     end
 
-    def new_user(name)
+    def new_user(name, uid, gid, dir, shell)
+      user = Attribute.new
+      class << user
+        attr_accessor :name
+        attr_accessor :uid
+        attr_accessor :gid
+        attr_accessor :dir
+        attr_accessor :shell
+      end
+      user.name         = name
+      user.uid          = uid 
+      user.gid          = gid
+      user.dir          = dir
+      user.shell        = shell 
+      user
     end
     
     def new_execute(command)

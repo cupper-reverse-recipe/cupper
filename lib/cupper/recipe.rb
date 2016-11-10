@@ -9,6 +9,7 @@ module Cupper
       @services     = Array.new
       @templates    = Array.new
       @users        = Array.new
+      @groups       = Array.new
       @execute      = Array.new
       @links        = Array.new
       @directories  = Array.new
@@ -23,6 +24,7 @@ module Cupper
       @links    = expand_links(collector.extract 'links')
       @services = expand_services(collector.extract 'services')
       @users    = expand_users(collector.extract 'users')
+      @groups   = expand_groups(collector.extract 'groups')
       super
     end
 
@@ -97,6 +99,18 @@ module Cupper
       att
     end
 
+    def expand_groups(groups)
+      att = Array.new
+      groups.each do |attr|
+        grp = attr[0]
+        gid = attr[1]['gid']
+        members = attr[1]['members']
+
+        att.push(new_group(grp, gid, members))
+      end
+      att
+    end
+
     # Every attribute object is created dynamic
     def new_package(name, version)
       package = Attribute.new
@@ -155,6 +169,19 @@ module Cupper
       user.dir          = dir
       user.shell        = shell 
       user
+    end
+
+    def new_group(name, gid, members)
+      group = Attribute.new
+      class << group
+        attr_accessor :name
+        attr_accessor :gid
+        attr_accessor :members
+      end
+      group.name         = name
+      group.gid          = gid
+      group.members      = members
+      group
     end
     
     def new_execute(command)

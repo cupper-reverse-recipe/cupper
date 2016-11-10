@@ -72,6 +72,10 @@ module Cupper
       raise NotImplementedError
     end
 
+    def groups
+      raise NotImplementedError
+    end
+
     def executes
       raise NotImplementedError
     end
@@ -120,6 +124,13 @@ module Cupper
         users.push(user)
       end
     end
+
+    def groups(data_extraction)
+      groups = Array.new
+      data_extraction['etc']['etc']['group'].each do |group|
+        groups.push(group)
+      end
+    end
   end
 
   class Arch
@@ -151,6 +162,13 @@ module Cupper
       users = Array.new
       data_extraction['etc']['etc']['passwd'].each do |user|
         users.push(user)
+      end
+    end
+
+    def groups(data_extraction)
+      groups = Array.new
+      data_extraction['etc']['etc']['group'].each do |group|
+        groups.push(group)
       end
     end
   end

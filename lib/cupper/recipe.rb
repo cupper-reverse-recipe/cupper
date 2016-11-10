@@ -3,7 +3,7 @@ module Cupper
   # Represents the recipe of the cookbook
   class Recipe
     include Entity
-    def initialize(dest_path, collector, erb_file = nil, type = nil)
+    def initialize(dest_path, collector, erb_file = nil, recipe_name = 'default')
       @packages     = Array.new
       @services     = Array.new
       @templates    = Array.new
@@ -14,7 +14,7 @@ module Cupper
       @directories  = Array.new
       @files        = Array.new
       @collector    = collector
-      super('recipe',dest_path,erb_file,type,'.rb')
+      super(recipe_name, dest_path, erb_file, nil, '.rb')
     end
 
     def create

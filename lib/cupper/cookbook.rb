@@ -8,12 +8,14 @@ module Cupper
     def initialize
       @cookbook_path    = "#{Dir.getwd}/cookbooks"
       @cookbook_files_path = "#{@cookbook_path}/files"
+      @cookbook_recipes_path = "#{@cookbook_path}/recipes"
       setup_paths
     end
 
     def setup_paths
       Dir.mkdir(@cookbook_path) unless Dir.exists?(@cookbook_path)
       Dir.mkdir(@cookbook_files_path) unless Dir.exists?(@cookbook_files_path)
+      Dir.mkdir(@cookbook_recipes_path) unless Dir.exists?(@cookbook_recipes_path)
     end
 
     def generate
@@ -24,8 +26,9 @@ module Cupper
     end
 
     def all_recipes(collector)
-      recipe = Recipe.new(@cookbook_path, collector, '_cookbook_file')
-      recipe.create
+      Recipe.new(@cookbook_recipes_path, collector, '_cookbook_file', 'cookbook_files').create
+      Recipe.new(@cookbook_recipes_path, collector, '_links', 'links').create
+      Recipe.new(@cookbook_recipes_path, collector, '_package', 'packages').create
     end
 
     def all_cookbook_files(collector)

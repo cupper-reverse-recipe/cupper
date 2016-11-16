@@ -5,10 +5,18 @@ require 'cupper/cookbook_file'
 module Cupper
   class Cookbook
     # TODO: Read config file to tell the project path and configs
-    def initialize
-      @cookbook_path    = "#{Dir.getwd}/cookbooks"
+    def initialize(cookbookname='default')
+      @cookbook_path    = "#{Dir.getwd}/#{cookbookname}"
       @cookbook_files_path = "#{@cookbook_path}/files"
       @cookbook_recipes_path = "#{@cookbook_path}/recipes"
+      @recipe_deps = [ # TODO this is hard code to reflect all_recipes. Refactor this
+        "#{cookbookname}::cookbook_file",
+        "#{cookbookname}::links",
+        "#{cookbookname}::groups",
+        "#{cookbookname}::services",
+        "#{cookbookname}::users",
+        "#{cookbookname}::packages",
+      ]
       setup_paths
     end
 
@@ -26,8 +34,12 @@ module Cupper
     end
 
     def all_recipes(collector)
+      Recipe.new(@cookbook_recipes_path, collector, 'recipe', 'default', @recipe_deps).create
       Recipe.new(@cookbook_recipes_path, collector, '_cookbook_file', 'cookbook_files').create
       Recipe.new(@cookbook_recipes_path, collector, '_links', 'links').create
+      Recipe.new(@cookbook_recipes_path, collector, '_groups', 'groups').create
+      Recipe.new(@cookbook_recipes_path, collector, '_services', 'services').create
+      Recipe.new(@cookbook_recipes_path, collector, '_users', 'users').create
       Recipe.new(@cookbook_recipes_path, collector, '_package', 'packages').create
     end
 

@@ -3,7 +3,8 @@ module Cupper
   # Represents the recipe of the cookbook
   class Recipe
     include Entity
-    def initialize(dest_path, collector, erb_file = nil, recipe_name = 'default')
+    def initialize(dest_path, collector, erb_file = nil, recipe_name = 'default', recipe_deps = nil)
+      @recipe_deps  = recipe_deps
       @packages     = Array.new
       @services     = Array.new
       @templates    = Array.new
@@ -18,12 +19,12 @@ module Cupper
     end
 
     def create
-      @packages = expand_packages(collector.extract 'packages')
-      @services = expand_services(collector.extract 'services')
-      @users    = expand_users(collector.extract 'users')
-      @groups   = expand_groups(collector.extract 'groups')
-      @links    = expand_links(collector.extract 'files')
-      @files    = expand_files(collector.extract 'files')
+      @packages = expand_packages(@collector.extract 'packages')
+      @services = expand_services(@collector.extract 'services')
+      @users    = expand_users(@collector.extract 'users')
+      @groups   = expand_groups(@collector.extract 'groups')
+      @links    = expand_links(@collector.extract 'files')
+      @files    = expand_files(@collector.extract 'files')
       super
     end
 
@@ -173,9 +174,6 @@ module Cupper
       link
     end
 
-    def new_template(path, source, owner, group, mode)
-    end
-
     def new_user(name, uid, gid, dir, shell)
       user = Attribute.new
       class << user
@@ -206,12 +204,6 @@ module Cupper
       group
     end
     
-    def new_execute(command)
-    end
-
-    def new_directory()
-    end
-
     def new_file(group, mode, owner, path, source='')
       file = Attribute.new
       class << file

@@ -18,7 +18,7 @@ Ohai.plugin(:Pacman) do
 
   collect_data(:default) do
     pacman Mash.new
-    pkgs from_cmd('pacman -Q')
+    pkgs = from_cmd('pacman -Q')
 
     pkgs.each do |pkg|
       name, version = pkg.split

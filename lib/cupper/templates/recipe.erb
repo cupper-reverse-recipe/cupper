@@ -2,7 +2,6 @@
 # If there is some issues please report on https://github.com/cupper-reverse-recipe/cupper/issues
 #
 
-<%= render '_packages.erb' %>
-<%= render '_links.erb' %>
-<%= render '_services.erb' %>
-<%= render '_users.erb' %>
+<% @recipe_deps.each do |name| %>
+include_recipe '<%= name %>'
+<% end %>

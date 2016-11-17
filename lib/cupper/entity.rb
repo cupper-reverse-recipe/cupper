@@ -26,16 +26,15 @@ module Cupper
     # Returns the content of the file
     def content(erb_file)
       return false if self.dir?
-      @template = File.read(TEMPLATE_PATH + "/#{erb_file}.erb")
+      @template = File.read("#{TEMPLATE_PATH}/#{erb_file}.erb")
     end
 
     def save
-      return false if self.exist?
-      File.open(@full_path,"a+") { |f| f.write(self.render) } if self.file?
-      Dir.mkdir(@full_path) if self.dir?
+      File.open(@full_path,"a+") { |f| f.write(self.render_template) } if self.file?
+      Dir.mkdir(@full_path) if self.dir? && !(self.exist?)
     end
 
-    def render
+    def render_template
       ERB.new(@template).result(binding)
     end
 

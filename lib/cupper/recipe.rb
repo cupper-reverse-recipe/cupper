@@ -1,10 +1,10 @@
 
 module Cupper
   # Represents the recipe of the cookbook
-  # TODO: This is just a example, it's should be changed to another file
   class Recipe
     include Entity
-    def initialize(dest_path, erb_file = nil, type = nil)
+    def initialize(dest_path, collector, erb_file = nil, recipe_name = 'default', recipe_deps = nil)
+      @recipe_deps  = recipe_deps
       @packages     = Array.new
       @services     = Array.new
       @templates    = Array.new
@@ -14,17 +14,17 @@ module Cupper
       @links        = Array.new
       @directories  = Array.new
       @files        = Array.new
-      super('recipe',dest_path,erb_file,type,'.rb')
+      @collector    = collector
+      super(recipe_name, dest_path, erb_file, nil, '.rb')
     end
 
     def create
-      collector = Collect.new
-      collector.setup
-      @packages = expand_packages(collector.extract 'packages')
-      @links    = expand_links(collector.extract 'links')
-      @services = expand_services(collector.extract 'services')
-      @users    = expand_users(collector.extract 'users')
-      @groups   = expand_groups(collector.extract 'groups')
+      @packages = expand_packages(@collector.extract 'packages')
+      @services = expand_services(@collector.extract 'services')
+      @users    = expand_users(@collector.extract 'users')
+      @groups   = expand_groups(@collector.extract 'groups')
+      @links    = expand_links(@collector.extract 'files')
+      @files    = expand_files(@collector.extract 'files')
       super
     end
 
@@ -39,8 +39,16 @@ module Cupper
       att
     end
 
-    def link?(file)
+    def link_type?(file)
       (file[1]['type'].split.first(2).join(' ').match('symbolic link'))
+    end
+
+    def dir_type?(file)
+      file[1]['type'].match('directory')
+    end
+
+    def text_type?(file)
+      file[1]['type'].match('text') or file[1]['type'].match('ASCII')
     end
 
     def convert_mode(mode)
@@ -72,14 +80,14 @@ module Cupper
     def expand_links(links)
       att = Array.new
       links.each do |attr|
-        if link?(attr)
+        if link_type?(attr)
           target = attr[0]
           to = attr[1]['type'].split.last(1).join
           group = attr[1]['group']
           mode = attr[1]['mode']
           owner = attr[1]['owner']
 
-          att.push(new_link(group, convert_mode(mode), owner, target, to))
+          att.push(new_link(group, mode, owner, target, to))
         end
       end
       att
@@ -107,6 +115,21 @@ module Cupper
         members = attr[1]['members']
 
         att.push(new_group(grp, gid, members))
+      end
+      att
+    end
+
+    def expand_files(files)
+      att = Array.new
+      files.each do |attr|
+        if text_type?(attr) and !(attr[1]['related'].nil?)
+          path = attr[0]
+          group = attr[1]['group']
+          mode = attr[1]['mode']
+          owner = attr[1]['owner']
+
+          att.push(new_file(group, mode, owner, path))
+        end
       end
       att
     end
@@ -151,9 +174,6 @@ module Cupper
       link
     end
 
-    def new_template(path, source, owner, group, mode)
-    end
-
     def new_user(name, uid, gid, dir, shell)
       user = Attribute.new
       class << user
@@ -184,13 +204,21 @@ module Cupper
       group
     end
     
-    def new_execute(command)
-    end
-
-    def new_directory()
-    end
-
-    def new_file()
+    def new_file(group, mode, owner, path, source='')
+      file = Attribute.new
+      class << file
+        attr_accessor :path
+        attr_accessor :source
+        attr_accessor :group
+        attr_accessor :mode
+        attr_accessor :owner
+      end
+      file.path         = path
+      file.source       = source
+      file.group        = group
+      file.mode         = convert_mode(mode)
+      file.owner        = owner
+      file
     end
   end
 end

@@ -12,8 +12,8 @@ describe Cupper::Collect do
 
   it 'should extract the attribute' do
     allow(collect).to receive(:platform).and_return('debian')
-    expect_any_instance_of(Cupper::Debian).to receive(:link).and_return(link_extraction)
-    extract = collect.extract 'link'
+    expect_any_instance_of(Cupper::Debian).to receive(:files).and_return(link_extraction)
+    extract = collect.extract 'files'
     expect(extract).to eq(link_extraction)
   end
 

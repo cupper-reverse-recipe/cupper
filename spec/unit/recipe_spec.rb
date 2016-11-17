@@ -7,8 +7,12 @@ describe Cupper::Recipe do
     File.expand_path(File.dirname __FILE__) + '/project_test'
   end
 
+  let(:collector) do
+    Cupper::Collect.new
+  end
+
   let(:recipe) do
-    Cupper::Recipe.new(test_path)
+    Cupper::Recipe.new(test_path,collector)
   end
 
   let(:extracted_packages) do
@@ -59,8 +63,8 @@ describe Cupper::Recipe do
   end
 
   it 'should check if file is a symbolic link' do
-    rt_true = recipe.link?([ 'zelda', { 'type' => 'symbolic link' }])
-    rt_false = recipe.link?([ 'zelda', { 'type' => 'symbolic' }])
+    rt_true = recipe.link_type?([ 'zelda', { 'type' => 'symbolic link' }])
+    rt_false = recipe.link_type?([ 'zelda', { 'type' => 'symbolic' }])
     expect(rt_true).to be_truthy
     expect(rt_false).not_to be_truthy
   end

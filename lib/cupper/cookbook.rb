@@ -9,7 +9,7 @@ module Cupper
       @cookbook_path    = "#{Dir.getwd}/#{cookbookname}"
       @cookbook_files_path = "#{@cookbook_path}/files"
       @cookbook_recipes_path = "#{@cookbook_path}/recipes"
-      @recipe_deps = [ # TODO this is hard code to reflect all_recipes. Refactor this
+      @recipe_deps = [ # TODO this is hard code to reflect all_recipes. Refactor this later
         "#{cookbookname}::cookbook_file",
         "#{cookbookname}::links",
         "#{cookbookname}::groups",
@@ -56,8 +56,14 @@ module Cupper
         if text_type?(attr) and !(attr[1]['related'].nil?)
           source = attr[0].split('/').last
           content = attr[1]['content']
-          cbf = CookbookFile.new(@cookbook_files_path, source, content, 'cookbook_file')
-          cbf.create
+          CookbookFile.new(@cookbook_files_path, source, content, 'cookbook_file').create
+        end
+        # TODO: This is a work around to source list file
+        #   should be replaced for a better logic
+        if text_type?(attr) and attr[0].include? "/etc/apt/sources.list"
+          source = attr[0].split('/').last
+          content = attr[1]['content']
+          CookbookFile.new(@cookbook_files_path, source, content, 'cookbook_file').create
         end
       end
     end

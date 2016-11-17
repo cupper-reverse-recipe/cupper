@@ -19,6 +19,7 @@ module Cupper
     end
 
     def create
+      @sources_list  = expand_sources_list(@collector.extract 'files')
       @packages = expand_packages(@collector.extract 'packages')
       @services = expand_services(@collector.extract 'services')
       @users    = expand_users(@collector.extract 'users')
@@ -26,6 +27,21 @@ module Cupper
       @links    = expand_links(@collector.extract 'files')
       @files    = expand_files(@collector.extract 'files')
       super
+    end
+
+    def expand_sources_list(files)
+      att = Array.new
+      files.each do |attr|
+        # TODO: Doesn't works for arch, this should be a plugin responsability
+        if attr[0].include?("/etc/apt/sources.list") and (convert_mode(attr[1]['mode']) != 'Unknown') and text_type?(attr)
+          path = attr[0]
+          group = attr[1]['group']
+          mode = attr[1]['mode']
+          owner = attr[1]['owner']
+          att.push(new_file(group, mode, owner, path))
+        end
+      end
+      att
     end
 
     def expand_packages(packages)
@@ -51,10 +67,10 @@ module Cupper
       file[1]['type'].match('text') or file[1]['type'].match('ASCII')
     end
 
+    # TODO: this should be on ohai plugin
     def convert_mode(mode)
-      # This abord the commons modes for files
       return 'ERROR' if not mode
-      result = case mode.split('').last(9).join
+      result = case mode.split('').last(9).join # Common modes
                when 'rwxrwxrwx' then '777'
                when 'rwxr-xr-x' then '755'
                when 'rwx------' then '700'

@@ -5,8 +5,13 @@ module Cupper
     include PlatformCollector
     def packages(data_extraction)
       packages = Array.new
+      duplicated = Array.new
+      data_extraction['pkg_deps']['pkg_deps'].each do |dep|
+        duplicated << dep[1]
+      end
+      duplicated.flatten!.uniq!
       data_extraction['packages']['packages'].each do |pkg|
-        packages.push(pkg)
+        packages.push(pkg) unless duplicated.include? pkg[0]
       end
       packages
     end

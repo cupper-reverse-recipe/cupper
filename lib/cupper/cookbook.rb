@@ -10,12 +10,12 @@ module Cupper
       @cookbook_files_path = "#{@cookbook_path}/files"
       @cookbook_recipes_path = "#{@cookbook_path}/recipes"
       @recipe_deps = [ # TODO this is hard code to reflect all_recipes. Refactor this later
-        "#{cookbookname}::cookbook_file",
+        "#{cookbookname}::packages",
+        "#{cookbookname}::cookbook_files",
         "#{cookbookname}::links",
         "#{cookbookname}::groups",
         "#{cookbookname}::services",
         "#{cookbookname}::users",
-        "#{cookbookname}::packages",
       ]
       setup_paths
     end

@@ -14,45 +14,20 @@ module Cupper
       @links        = Array.new
       @directories  = Array.new
       @files        = Array.new
+      @files_path   = "#{dest_path.chomp("recipes")}/files"
       @collector    = collector
       super(recipe_name, dest_path, erb_file, nil, '.rb')
     end
 
     def create
-      @sources_list  = expand_sources_list(@collector.extract 'files')
-      @packages = expand_packages(@collector.extract 'packages')
-      @services = expand_services(@collector.extract 'services')
-      @users    = expand_users(@collector.extract 'users')
-      @groups   = expand_groups(@collector.extract 'groups')
-      @links    = expand_links(@collector.extract 'files')
-      @files    = expand_files(@collector.extract 'files')
+      @sources_list   = expand_sources_list(@collector.extract 'files')
+      @packages       = expand_packages(@collector.extract 'packages')
+      @services       = expand_services(@collector.extract 'services')
+      @users          = expand_users(@collector.extract 'users')
+      @groups         = expand_groups(@collector.extract 'groups')
+      @links          = expand_links(@collector.extract 'files')
+      @files          = expand_files(@collector.extract 'files')
       super
-    end
-
-    def expand_sources_list(files)
-      att = Array.new
-      files.each do |attr|
-        # TODO: Doesn't works for arch, this should be a plugin responsability
-        if attr[0].include?("/etc/apt/sources.list") and (convert_mode(attr[1]['mode']) != 'Unknown') and text_type?(attr)
-          path = attr[0]
-          group = attr[1]['group']
-          mode = attr[1]['mode']
-          owner = attr[1]['owner']
-          att.push(new_file(group, mode, owner, path))
-        end
-      end
-      att
-    end
-
-    def expand_packages(packages)
-      att = Array.new
-      packages.each do |attr|
-        pkg = attr[0]
-        version = attr[1]['version']
-
-        att.push(new_package(pkg,version))
-      end
-      att
     end
 
     def link_type?(file)
@@ -80,6 +55,33 @@ module Cupper
                else 'Unknown'
                end
       result
+    end
+
+
+    def expand_sources_list(files)
+      att = Array.new
+      files.each do |attr|
+        # TODO: Doesn't works for arch, this should be a plugin responsability
+        if attr[0].include?("/etc/apt/sources.list") and (convert_mode(attr[1]['mode']) != 'Unknown') and text_type?(attr)
+          path = attr[0]
+          group = attr[1]['group']
+          mode = attr[1]['mode']
+          owner = attr[1]['owner']
+          att.push(new_file(group, mode, owner, path))
+        end
+      end
+      att
+    end
+
+    def expand_packages(packages)
+      att = Array.new
+      packages.each do |attr|
+        pkg = attr[0]
+        version = attr[1]['version']
+
+        att.push(new_package(pkg,version))
+      end
+      att
     end
 
     def expand_services(services)
@@ -138,13 +140,17 @@ module Cupper
     def expand_files(files)
       att = Array.new
       files.each do |attr|
-        if text_type?(attr) and !(attr[1]['related'].nil?)
+        if text_type?(attr) and (!(attr[1]['related'].nil?) or attr[0].include? "/etc/apt/sources.list")
           path = attr[0]
           group = attr[1]['group']
           mode = attr[1]['mode']
           owner = attr[1]['owner']
-
           att.push(new_file(group, mode, owner, path))
+
+          # Related file
+          source = attr[0].split('/').last
+          content = attr[1]['content']
+          CookbookFile.new(@files_path, source, content, 'cookbook_file').create
         end
       end
       att

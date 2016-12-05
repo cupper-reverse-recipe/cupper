@@ -30,7 +30,6 @@ module Cupper
       collector = Collect.new
       collector.setup
       all_recipes(collector)
-      all_cookbook_files(collector)
     end
 
     def all_recipes(collector)
@@ -41,31 +40,6 @@ module Cupper
       Recipe.new(@cookbook_recipes_path, collector, '_services', 'services').create
       Recipe.new(@cookbook_recipes_path, collector, '_users', 'users').create
       Recipe.new(@cookbook_recipes_path, collector, '_package', 'packages').create
-    end
-
-    def all_cookbook_files(collector)
-      expand_cookbook_files(collector.extract 'files')
-    end
-
-    def text_type?(file)
-      file[1]['type'].match('text') or file[1]['type'].match('ASCII')
-    end
-
-    def expand_cookbook_files(files)
-      files.each do |attr|
-        if text_type?(attr) and !(attr[1]['related'].nil?)
-          source = attr[0].split('/').last
-          content = attr[1]['content']
-          CookbookFile.new(@cookbook_files_path, source, content, 'cookbook_file').create
-        end
-        # TODO: This is a work around to source list file
-        #   should be replaced for a better logic
-        if text_type?(attr) and attr[0].include? "/etc/apt/sources.list"
-          source = attr[0].split('/').last
-          content = attr[1]['content']
-          CookbookFile.new(@cookbook_files_path, source, content, 'cookbook_file').create
-        end
-      end
     end
   end
 end

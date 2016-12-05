@@ -1,0 +1,9 @@
+# Cookbook_file Session
+
+<% for @cbf in @files %>
+cookbook_file '<%= @cbf.path %>'
+  owner '<%= @cbf.owner %>'
+  group '<%= @cbf.group %>'
+  mode '<%= @cbf.mode %>'
+end
+<% end %>

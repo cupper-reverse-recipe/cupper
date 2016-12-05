@@ -1,0 +1,19 @@
+# Package session
+
+# This cookbookfile is for the source list and are putting here by hard code
+#   in some point in the future it should be replaced for a better treatement
+#
+<% for @cb in @sources_list %>
+cookbook_file '<%= @cb.path %>' do
+  owner '<%= @cb.owner %>'
+  group '<%= @cb.group %>'
+  mode '<%=  @cb.mode %>'
+end
+<% end %>
+
+<% for @package in @packages %>
+package '<%= @package.name %>' do
+  version '<%= @package.version %>'
+  action :install
+end
+<% end %>

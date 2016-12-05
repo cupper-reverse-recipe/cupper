@@ -1,0 +1,10 @@
+# Links Session
+
+<% for @link in @links %>
+link '<%= @link.target_file %>' do
+  group '<%= @link.group  %>'
+  mode '<%= @link.mode %>'
+  owner '<%= @link.owner %>'
+  to '<%= @link.to %>'
+end
+<% end %>

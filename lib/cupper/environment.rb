@@ -164,7 +164,7 @@ module Cupper
     end
 
     def find_cupperfile(search_path, filenames=nil)
-      filenames ||= ["cupperfile", "cupperfile"]
+      filenames ||= ["Cupperfile", "cupperfile"]
       filenames.each do |cupperfile|
         current_path = search_path.join(cupperfile)
         return current_path if current_path.file?

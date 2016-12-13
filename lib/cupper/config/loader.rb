@@ -1,7 +1,5 @@
 require "pathname"
 
-require "log4r"
-
 module Cupper
   module Config
     # This class is responsible for loading Cupper configuration,
@@ -12,6 +10,11 @@ module Cupper
     # set later always overrides those set earlier; this is how
     # configuration "scoping" is implemented.
     class Loader
+      def initialize()
+        @config_cache  = {}
+        @proc_cache    = {}
+        @sources       = {}
+      end
 
     end
   end

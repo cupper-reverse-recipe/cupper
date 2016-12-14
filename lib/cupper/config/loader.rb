@@ -59,88 +59,28 @@ module Cupper
       end
 
       def load(order)
-        unknown_sources = @sources.keys - order
-        if !unknown_sources.empty?
-          @logger.error("Unknown config sources: #{unknown_sources.inspect}")
-        end
-
-        # Get the current version config class to use
-        current_version      = @version_order.last
-        current_config_klass = @versions.get(current_version)
-
-        # This will hold our result
-        result = current_config_klass.init
-
-        # Keep track of the warnings and errors that may come from
-        # upgrading the Vagrantfiles
-        warnings = []
-        errors   = []
 
         order.each do |key|
           next if !@sources.key?(key)
 
-          @sources[key].each do |version, proc|
+          @sources[key].each do | proc|
             if !@config_cache.key?(proc)
-              @logger.debug("Loading from: #{key} (evaluating)")
 
-              # Get the proper version loader for this version and load
-              version_loader = @versions.get(version)
-              version_config = version_loader.load(proc)
+              config = loader.load(proc)
 
-              # Store the errors/warnings associated with loading this
-              # configuration. We'll store these for later.
-              version_warnings = []
-              version_errors   = []
-
-              # If this version is not the current version, then we need
-              # to upgrade to the latest version.
-              if version != current_version
-                @logger.debug("Upgrading config from version #{version} to #{current_version}")
-                version_index = @version_order.index(version)
-                current_index = @version_order.index(current_version)
-
-                (version_index + 1).upto(current_index) do |index|
-                  next_version = @version_order[index]
-                  @logger.debug("Upgrading config to version #{next_version}")
-
-                  # Get the loader of this version and ask it to upgrade
-                  loader = @versions.get(next_version)
-                  upgrade_result = loader.upgrade(version_config)
-
-                  this_warnings = upgrade_result[1]
-                  this_errors   = upgrade_result[2]
-                  @logger.debug("Upgraded to version #{next_version} with " +
-                                "#{this_warnings.length} warnings and " +
-                                "#{this_errors.length} errors")
-
-                  # Append loading this to the version warnings and errors
-                  version_warnings += this_warnings
-                  version_errors   += this_errors
-
-                  # Store the new upgraded version
-                  version_config = upgrade_result[0]
-                end
-              end
-
-              # Cache the loaded configuration along with any warnings
-              # or errors so that they can be retrieved later.
-              @config_cache[proc] = [version_config, version_warnings, version_errors]
+              @config_cache[proc] = [config]
             else
-              @logger.debug("Loading from: #{key} (cache)")
+              puts "Loading from: #{key} (cache)"
             end
 
             # Merge the configurations
             cache_data = @config_cache[proc]
-            result = current_config_klass.merge(result, cache_data[0])
-
-            # Append the total warnings/errors
-            warnings += cache_data[1]
-            errors   += cache_data[2]
+            result = result.merge(result, cache_data[0])
           end
         end
 
-        @logger.debug("Configuration loaded successfully, finalizing and returning")
-        [current_config_klass.finalize(result), warnings, errors]
+        puts "Configuration loaded successfully, finalizing and returning"
+        [result.finalize(result)]
       end
 
     end

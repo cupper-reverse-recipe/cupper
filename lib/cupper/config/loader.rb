@@ -127,7 +127,7 @@ module Cupper
             # contain well worded error messages and context.
             puts "#{ex.message}".red
           rescue Exception => e
-            puts "Vagrantfile load error: #{e.message}".red
+            puts "Cupperfile load error: #{e.message}".red
             puts e.backtrace.join("\n").red
 
             line = "(unknown)"

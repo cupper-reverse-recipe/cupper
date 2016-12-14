@@ -1,7 +1,13 @@
 require "pathname"
+require "cupper/errors"
+require 'colorize'
+
 
 module Cupper
   module Config
+
+    CONFIGURE_MUTEX = Mutex.new
+
     # This class is responsible for loading Cupper configuration,
     # usually in the form of Cupperfiles.
     #
@@ -20,7 +26,7 @@ module Cupper
       # The `name` should be a symbol and must uniquely identify the data
       # being given.
       #
-      # `data` can either be a path to a Ruby Vagrantfile or a `Proc` directly.
+      # `data` can either be a path to a Ruby Cupperfile or a `Proc` directly.
       # `data` can also be an array of such values.
       #
       # At this point, no configuration is actually loaded. Note that calling
@@ -81,6 +87,81 @@ module Cupper
 
         puts "Configuration loaded successfully, finalizing and returning"
         [result.finalize(result)]
+      end
+
+      def procs_for_source(source, reliably_inspected_sources)
+        # Convert all pathnames to strings so we just have their path
+        source = source.to_s if source.is_a?(Pathname)
+
+        if source.is_a?(Array)
+          # An array must be formatted as [version, proc], so verify
+          # that and then return it
+          raise ArgumentError, "String source must have format [version, proc]" if source.length != 2
+
+          # Return it as an array since we're expected to return an array
+          # of [version, proc] pairs, but an array source only has one.
+          return [source]
+        elsif source.is_a?(String)
+          # Strings are considered paths, so load them
+          return procs_for_path(source)
+        else
+          raise ArgumentError, "Unknown configuration source: #{reliably_inspected_sources[source]}"
+        end
+      end
+
+      def procs_for_path(path)
+        puts "Load procs for pathname: #{path}"
+
+        return capture_configures do
+          begin
+            Kernel.load path
+          rescue SyntaxError => e
+            # Report syntax errors in a nice way.
+            raise Errors::CupperfileSyntaxError, file: e.message
+
+          rescue SystemExit => ex
+            # Continue raising that exception...
+            puts "#{ex.message}".red
+          rescue Cupper::Errors::CupperError => ex
+            # Continue raising known Vagrant errors since they already
+            # contain well worded error messages and context.
+            puts "#{ex.message}".red
+          rescue Exception => e
+            puts "Vagrantfile load error: #{e.message}".red
+            puts e.backtrace.join("\n").red
+
+            line = "(unknown)"
+            if e.backtrace && e.backtrace[0]
+              e.backtrace[0].split(":").each do |part|
+                if part =~ /\d+/
+                  line = part.to_i
+                  break
+                end
+              end
+            end
+
+            # Report the generic exception
+            raise Errors::CupperfileLoadError,
+              path: path,
+              line: line,
+              exception_class: e.class,
+              message: e.message.red
+          end
+        end
+      end
+
+      def capture_configures
+        CONFIGURE_MUTEX.synchronize do
+          # Reset the last procs so that we start fresh
+          @last_procs = []
+
+          # Yield to allow the caller to do whatever loading needed
+          yield
+
+          # Return the last procs we've seen while still in the mutex,
+          # knowing we're safe.
+          return @last_procs
+        end
       end
 
     end

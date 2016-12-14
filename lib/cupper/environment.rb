@@ -2,6 +2,7 @@ require "pathname"
 require "cupper/cupperfile"
 require "cupper/version"
 require 'colorize'
+require "cupper/errors"
 
 module Cupper
   class Environment
@@ -109,8 +110,7 @@ module Cupper
         root_cupperfile = find_cupperfile(root_path, @cupperfile_name)
       end
 
-      @config_loader = Config::Loader.new(
-        Config::VERSIONS, Config::VERSIONS_ORDER)
+      @config_loader = Config::Loader.new()
       @config_loader.set(:root, root_cupperfile) if root_cupperfile
       @config_loader
     end

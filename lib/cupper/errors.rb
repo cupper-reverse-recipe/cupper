@@ -75,8 +75,16 @@ module Cupper
       error_key(:no_env)
     end
 
+    class CupperfileSyntaxError < CupperError
+      error_key(:cupperfile_syntax_error)
+    end
+
     class LocalDataDirectoryNotAccessible < CupperError
       error_key(:local_data_dir_not_accessible)
+    end
+
+    class CupperfileLoadError < CupperError
+      error_key(:cupperfile_load_error)
     end
 
   end

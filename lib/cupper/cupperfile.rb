@@ -14,12 +14,26 @@ module Cupper
 
       # Create the machine and cache it for future calls. This will also
       # return the machine from this method.
-      return Machine.new(name, config, env, self)
+      return new_machine(name, config, env) 
     end
 
-    def machine_config(name, env)
+    def new_machine(name, config, env)
+      machine = Attribute.new
+      class << machine
+        attr_accessor :name
+        attr_accessor :config
+        attr_accessor :env
+      end
+      machine.name = name
+      machine.config = config
+      machine.env = env
+      machine
+    end
+
+    def cupper_config(name, env)
       keys = @keys.dup
 
+      config_key = "#{object_id}_machine_being_read_#{name}"
       # Add the configuration to the loader and keys
       keys << config_key
 
@@ -33,9 +47,11 @@ module Cupper
           
           cupperfile = find_cupperfile(env.root_path)
           if cupperfile
-            config_key = "#{object_id}_machine_being_read_#{name}"
             @loader.set(config_key, cupperfile)
             local_keys.unshift(config_key)
+            puts config_key
+            puts local_keys
+            puts cupperfile
             config = @loader.load(local_keys)
           end
         # TODO: implement a way to change and override recursively here

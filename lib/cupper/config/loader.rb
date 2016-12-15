@@ -65,7 +65,7 @@ module Cupper
       end
 
       def load(order)
-
+        result = []
         order.each do |key|
           next if !@sources.key?(key)
 
@@ -81,12 +81,12 @@ module Cupper
 
             # Merge the configurations
             cache_data = @config_cache[proc]
-            result = result.merge(result, cache_data[0])
+            result = cache_data[0]
           end
         end
 
         puts "Configuration loaded successfully, finalizing and returning"
-        [result.finalize(result)]
+        return result
       end
 
       def procs_for_source(source, reliably_inspected_sources)

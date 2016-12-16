@@ -52,6 +52,7 @@ module Cupper
                when 'rw-rw-rw-' then '666'
                when 'rw-r--r--' then '644'
                when 'rw-------' then '600'
+               when 'r--r-----' then '440'
                else 'Unknown'
                end
       result
@@ -62,7 +63,7 @@ module Cupper
       att = Array.new
       files.each do |attr|
         # TODO: Doesn't works for arch, this should be a plugin responsability
-        if attr[0].include?("/etc/apt/sources.list") and (convert_mode(attr[1]['mode']) != 'Unknown') and text_type?(attr)
+        if attr[0].include?("/etc/apt/sources.list") and text_type?(attr)
           path = attr[0]
           group = attr[1]['group']
           mode = attr[1]['mode']
@@ -142,15 +143,17 @@ module Cupper
       files.each do |attr|
         if text_type?(attr) and (!(attr[1]['related'].nil?) or attr[0].include? "/etc/apt/sources.list")
           path = attr[0]
+          source = attr[0]
           group = attr[1]['group']
           mode = attr[1]['mode']
           owner = attr[1]['owner']
-          att.push(new_file(group, mode, owner, path))
+          att.push(new_file(group, mode, owner, path,source))
 
           # Related file
           source = attr[0].split('/').last
           content = attr[1]['content']
-          CookbookFile.new(@files_path, source, content, 'cookbook_file').create
+          full_path = attr[0]
+          CookbookFile.new(@files_path, source, content, 'cookbook_file', full_path).create
         end
       end
       att

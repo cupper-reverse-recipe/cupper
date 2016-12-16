@@ -30,7 +30,7 @@ module Cupper
     end
 
     def save
-      File.open(@full_path,"a+") { |f| f.write(self.render_template) } if self.file?
+      File.open(@full_path,"w+") { |f| f.write(self.render_template) } if self.file?
       Dir.mkdir(@full_path) if self.dir? && !(self.exist?)
     end
 

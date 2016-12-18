@@ -65,10 +65,11 @@ module Cupper
         # TODO: Doesn't works for arch, this should be a plugin responsability
         if attr[0].include?("/etc/apt/sources.list") and text_type?(attr)
           path = attr[0]
+          source = attr[0]
           group = attr[1]['group']
           mode = attr[1]['mode']
           owner = attr[1]['owner']
-          att.push(new_file(group, mode, owner, path))
+          att.push(new_file(group, mode, owner, path,source))
         end
       end
       att

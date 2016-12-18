@@ -2,8 +2,7 @@
 
 <% for @user in @users %>
 user '<%= @user.name%>' do
-  uid '<%= @user.uid%>' 
-  gid '<%= @user.gid%>'
+  uid <%= @user.uid%>
   home '<%= @user.dir%>'
   shell '<%= @user.shell%>'
 end

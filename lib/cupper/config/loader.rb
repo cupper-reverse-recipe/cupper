@@ -15,7 +15,12 @@ module Cupper
 
       def load(cupperfile)
         Kernel.load cupperfile
-        result = Configuration.for 'Cupperfile'
+
+        if defined? Cupper.native_configured
+          result = Cupper
+        else
+          result = Configuration.for 'Cupperfile'
+        end
 
         puts "Configuration loaded successfully, finalizing and returning"
         return result

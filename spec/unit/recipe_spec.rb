@@ -86,9 +86,9 @@ describe Cupper::Recipe do
   end
 
   it 'should create a new service using attribute class' do
-    new_service = recipe.new_service('nginx', 'install')
+    new_service = recipe.new_service('nginx', 'install', 'systemd')
     expect(new_service).to be_a(Cupper::Attribute)
-    expect(new_service).to have_attributes(:name => 'nginx', :action => 'install')
+    expect(new_service).to have_attributes(:name => 'nginx', :action => 'install', :provider => 'systemd')
   end
 
   it 'should create a new link using attribute class' do

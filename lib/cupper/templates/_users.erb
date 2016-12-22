@@ -1,9 +1,10 @@
 # User session
 
 <% for @user in @users %>
-user '<%= @user.name%>' do
-  uid <%= @user.uid%>
-  home '<%= @user.dir%>'
-  shell '<%= @user.shell%>'
+user '<%= @user.name %>' do
+  uid <%= @user.uid %>
+  home '<%= @user.dir %>'
+  shell '<%= @user.shell %>'
+  manage_home <%= @user.manage_home %>
 end
 <% end %>

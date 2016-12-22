@@ -90,9 +90,10 @@ module Cupper
       att = Array.new
       services.each do |attr|
         srv = attr[0]
+        provider = attr[1]['provider']
         action = attr[1]['action']
 
-        att.push(new_service(srv,action))
+        att.push(new_service(srv,action,provider))
       end
       att
     end
@@ -121,8 +122,9 @@ module Cupper
         gid = attr[1]['gid']
         dir = attr[1]['dir']
         shell = attr[1]['shell']
+        manage_home = if dir.include?("home") then "true" else "false" end
 
-        att.push(new_user(usr, uid, gid, dir, shell))
+        att.push(new_user(usr, uid, gid, dir, shell, manage_home))
       end
       att
     end
@@ -172,14 +174,16 @@ module Cupper
       package
     end
 
-    def new_service(name, action)
+    def new_service(name, action, provider)
       service = Attribute.new
       class << service
         attr_accessor :name
         attr_accessor :action
+        attr_accessor :provider
       end
       service.name = name
       service.action = action
+      service.provider = provider
       service
     end
 
@@ -200,7 +204,7 @@ module Cupper
       link
     end
 
-    def new_user(name, uid, gid, dir, shell)
+    def new_user(name, uid, gid, dir, shell, manage_home)
       user = Attribute.new
       class << user
         attr_accessor :name
@@ -208,12 +212,14 @@ module Cupper
         attr_accessor :gid
         attr_accessor :dir
         attr_accessor :shell
+        attr_accessor :manage_home
       end
       user.name         = name
-      user.uid          = uid 
+      user.uid          = uid
       user.gid          = gid
       user.dir          = dir
-      user.shell        = shell 
+      user.shell        = shell
+      user.manage_home  = manage_home
       user
     end
 
@@ -229,7 +235,7 @@ module Cupper
       group.members      = members
       group
     end
-    
+
     def new_file(group, mode, owner, path, source='')
       file = Attribute.new
       class << file

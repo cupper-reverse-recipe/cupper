@@ -5,7 +5,6 @@ module Cupper
     def initialize(dest_path, source, content, erb_file, full_path, type = nil)
       @source    = source
       @content   = content
-      puts content if full_path.include? "sources.list"
       @file_path = dest_path
       subdir = full_path.split('/')
       subdir.pop

@@ -12,8 +12,15 @@ Ohai.plugin(:Services) do
 
     srvs.each do |srv|
       name = srv.split.first
+      next unless name.match /\.service/
+
+      # Removing the extention of the service
+      name = name.split "."
+      name.pop
+      name = name.join "."
       services[name] = {
         "action" => 'restart',
+        "provider" => 'Chef::Provider::Service::Systemd' # TODO: hard code, needs to collect the provider
       }
     end
   end

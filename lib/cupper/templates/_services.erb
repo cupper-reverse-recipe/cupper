@@ -2,6 +2,7 @@
 
 <% for @service in @services %>
 service '<%= @service.name %>' do
-  action :<%= @service.action%>
+  provider <%= @service.provider %>
+  action :<%= @service.action %>
 end
 <% end %>

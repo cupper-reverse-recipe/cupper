@@ -1,10 +1,9 @@
 module Cupper
   class Cupperfile
 
-    def initialize(loader, key)
+    def initialize(key)
       @key   = key
-      @loader = loader
-      @config, _ = loader.load(key)
+      @config, _ = Cupper::Config.load(key)
     end
 
     def machine_being_read(name, env)
@@ -31,10 +30,10 @@ module Cupper
     end
 
     def cupper_config(name, env)
-      cupperfile = find_cupperfile(env.root_path)
+      cupperfile = env.find_cupperfile(env.root_path)
       if cupperfile
         puts cupperfile
-        config = @loader.load(cupperfile)
+        config = Cupper::Config.load(cupperfile)
       end
 
       return {
@@ -42,17 +41,5 @@ module Cupper
         # TODO: add other meaningfull returns
       }
     end
-
-    protected
-
-    def find_cupperfile(search_path)
-      ["Cupperfile", "cupperfile"].each do |cupperfile|
-        current_path = search_path.join(cupperfile)
-        return current_path if current_path.file?
-      end
-
-      nil
-    end
-
   end
 end

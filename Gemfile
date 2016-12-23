@@ -5,7 +5,6 @@ gemspec
 
 gem 'ohai'
 gem 'thor'
-gem 'configuration'
 gem 'i18n'
 gem 'colorize'
 gem 'coveralls', require: false

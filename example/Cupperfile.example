@@ -1,13 +1,8 @@
 # -*- mode: ruby -*-
 # # vi: set ft=ruby :
 
-Configuration.for('Cupperfile') {
-  sensible_files false
-  downgrade true
-}
-
-Cupper.config do
-  Cupper.configure()
+Cupper::Config.config do
+  Cupper::Config.configure()
   sensible_files false
   downgrade true
 end

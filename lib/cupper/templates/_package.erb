@@ -5,6 +5,7 @@
 #
 <% for @cb in @sources_list %>
 cookbook_file '<%= @cb.path %>' do
+  source '<%= @cb.source %>'
   owner '<%= @cb.owner %>'
   group '<%= @cb.group %>'
   mode '<%=  @cb.mode %>'

@@ -2,6 +2,7 @@ require "pathname"
 require "cupper/cupperfile"
 require "cupper/version"
 require 'colorize'
+require "cupper/errors"
 
 module Cupper
   class Environment
@@ -101,20 +102,6 @@ module Cupper
       "#<#{self.class}: #{@cwd}>".encode('external')
     end
 
-    def config_loader
-      return @config_loader if @config_loader
-
-      root_cupperfile = nil
-      if root_path
-        root_cupperfile = find_cupperfile(root_path, @cupperfile_name)
-      end
-
-      @config_loader = Config::Loader.new(
-        Config::VERSIONS, Config::VERSIONS_ORDER)
-      @config_loader.set(:root, root_cupperfile) if root_cupperfile
-      @config_loader
-    end
-
     def environment(cupperfile, **opts)
       path = File.expand_path(cupperfile, root_path)
       file = File.basename(path)
@@ -160,11 +147,11 @@ module Cupper
     end
 
     def cupperfile
-      @cupperfile ||= cupperfile.new(config_loader, [:home, :root])
+      @cupperfile ||= Cupper::Cupperfile.new(find_cupperfile(@root_path))
     end
 
     def find_cupperfile(search_path, filenames=nil)
-      filenames ||= ["cupperfile", "cupperfile"]
+      filenames ||= ["Cupperfile", "cupperfile"]
       filenames.each do |cupperfile|
         current_path = search_path.join(cupperfile)
         return current_path if current_path.file?

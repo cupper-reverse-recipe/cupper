@@ -5,6 +5,11 @@ require 'cupper/ohai_plugins'
 require 'cupper/collect'
 require 'cupper/cookbook'
 require 'cupper/entity'
+require 'cupper/config/config'
+require 'cupper/cupperfile'
+require 'cupper/environment'
+require 'cupper/errors'
+
 
 
 module Cupper

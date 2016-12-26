@@ -7,6 +7,7 @@ require 'thor'
 require 'cupper/project'
 require 'cupper/cookbook'
 require 'cupper/ohai_plugins'
+require 'cupper/environment'
 
 module Cupper
   class Cli < Thor
@@ -30,7 +31,14 @@ module Cupper
     desc 'generate', 'Extract configuration and create a cookbook'
     method_option :verbose, :aliases => '-v', :desc => 'Enable output log'
     def generate
-      puts "Generating the Cookbook"
+      puts "Generating the Cookbook..."
+
+      puts "Setting up the environment"
+      env = Environment.new
+      env.check_env(Errors::NoEnvironmentError, env.root_path)
+      config = env.cupperfile
+
+      puts Config.sensible_files
       cookbook = Cookbook.new
       if options.verbose?
         puts "Verbose mode enabled"

@@ -1,7 +1,7 @@
+require 'colorize'
 require "pathname"
 require "cupper/cupperfile"
 require "cupper/version"
-require 'colorize'
 require "cupper/errors"
 
 module Cupper
@@ -34,6 +34,7 @@ module Cupper
         raise ex if !root_path 
       rescue ex => ex
         puts "#{ex.message}".red
+        exit
       end
     end
 

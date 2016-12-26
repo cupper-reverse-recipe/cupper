@@ -21,30 +21,28 @@ module Cupper
       end
     end
 
-    def self.configure()
+    def self.configure
       self.config do
         parameter :native_configured
         parameter :sensible_files
-        parameter :downgrade
+        parameter :allow_downgrade
+        parameter :sourceless_packages
 
         native_configured true
       end
       # TODO: raise stuff if mandatory stuff is not defined in cupperfile
     end
-      # And we define a wrapper for the configuration block, that we'll use to set up
-    # our set of options
+
     def config(&block)
       instance_eval &block
     end
 
     def load(cupperfile)
       Kernel.load cupperfile
-
       result = Cupper::Config
 
       puts "Configuration loaded successfully, finalizing and returning"
       return result
     end
-
   end
 end

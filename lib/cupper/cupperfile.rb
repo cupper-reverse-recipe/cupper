@@ -32,7 +32,6 @@ module Cupper
     def cupper_config(name, env)
       cupperfile = env.find_cupperfile(env.root_path)
       if cupperfile
-        puts cupperfile
         config = Cupper::Config.load(cupperfile)
       end
 

@@ -44,5 +44,16 @@ module Cupper
       puts "Configuration loaded successfully, finalizing and returning"
       return result
     end
+
+    def self.all_sensibles
+      sensibles = Array.new
+      unless sensible_files
+        env = Cupper::ENVIRONMENT
+        File.open("#{env.root_path}/.sensibles").each do |line|
+          sensibles.push line.chomp unless line.strip.chomp.match /^#.*/ or line.chomp.empty?
+        end
+      end
+      sensibles
+    end
   end
 end

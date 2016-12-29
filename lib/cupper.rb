@@ -13,10 +13,11 @@ require 'cupper/errors'
 
 
 module Cupper
-  CUPPER_ROOT       = File.expand_path(File.dirname(__FILE__))
-  OHAI_PLUGINS_PATH = CUPPER_ROOT + '/cupper/plugins/ohai'
+  CUPPER_ROOT         = File.expand_path(File.dirname(__FILE__))
+  OHAI_PLUGINS_PATH   = CUPPER_ROOT + '/cupper/plugins/ohai'
   CUPPER_PLUGINS_PATH = CUPPER_ROOT + '/cupper/plugins/cupper'
-  TEMPLATE_PATH     = CUPPER_ROOT + '/cupper/templates'
+  TEMPLATE_PATH       = CUPPER_ROOT + '/cupper/templates'
+  ENVIRONMENT = Environment.new
 
   # REVIEW: maybe there is a better way and place to load all plugins
   # Loading all cupper plugins

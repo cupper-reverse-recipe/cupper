@@ -34,11 +34,9 @@ module Cupper
       puts "Generating the Cookbook..."
 
       puts "Setting up the environment"
-      env = Environment.new
-      env.check_env(Errors::NoEnvironmentError, env.root_path)
-      config = env.cupperfile
+      Cupper::ENVIRONMENT.check_env(Errors::NoEnvironmentError, Cupper::ENVIRONMENT.root_path)
+      Cupper::ENVIRONMENT.cupperfile
 
-      puts Config.sensible_files
       cookbook = Cookbook.new
       if options.verbose?
         puts "Verbose mode enabled"

@@ -34,10 +34,6 @@ module Cupper
       (file[1]['type'].split.first(2).join(' ').match('symbolic link'))
     end
 
-    def dir_type?(file)
-      file[1]['type'].match('directory')
-    end
-
     def text_type?(file)
       file[1]['type'].match('text') or file[1]['type'].match('ASCII')
     end
@@ -144,7 +140,7 @@ module Cupper
     def expand_files(files)
       att = Array.new
       files.each do |attr|
-        if text_type?(attr) and (!(attr[1]['related'].nil?) or attr[0].include? "/etc/apt/sources.list")
+        if valid_cookbook_file?(attr)
           path = attr[0]
           source = attr[0]
           group = attr[1]['group']
@@ -160,6 +156,17 @@ module Cupper
         end
       end
       att
+    end
+
+    def valid_cookbook_file?(attr)
+      (text_type?(attr) and
+      !sensible_files?(attr) and
+      (!(attr[1]['related'].nil?) or
+      attr[0].include? "/etc/apt/sources.list"))
+    end
+
+    def sensible_files?(attr)
+      !!(Config.all_sensibles.find { |file| attr[0].match Regexp.new("^#{file}$") })
     end
 
     # Every attribute object is created dynamic

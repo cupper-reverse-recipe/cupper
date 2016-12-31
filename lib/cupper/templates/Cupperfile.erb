@@ -35,4 +35,9 @@ Cupper::Config.config do
   #   on the machine that the cookbook will run before running
   #   the cookbook.
   sourceless_packages false
+
+  # The packages are extracted with the version instaled in the
+  #   machine. You may want to not specify the version on the
+  #   recipe. If so, set the variable to false.
+  package_version true
 end

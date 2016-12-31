@@ -27,6 +27,7 @@ module Cupper
         parameter :sensible_files
         parameter :allow_downgrade
         parameter :sourceless_packages
+        parameter :package_version
 
         native_configured true
       end

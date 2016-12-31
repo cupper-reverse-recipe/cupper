@@ -35,7 +35,7 @@ module Cupper
     end
 
     def render_template
-      ERB.new(@template).result(binding)
+      ERB.new(@template, 0, '-').result(binding)
     end
 
     # Treats entity as a file or as a dir

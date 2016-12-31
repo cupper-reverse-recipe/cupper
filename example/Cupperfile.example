@@ -1,0 +1,8 @@
+# -*- mode: ruby -*-
+# # vi: set ft=ruby :
+
+Cupper::Config.config do
+  Cupper::Config.configure()
+  sensible_files false
+  downgrade true
+end

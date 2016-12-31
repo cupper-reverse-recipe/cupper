@@ -15,3 +15,10 @@ en:
         state is not accessible. The directory specified as the local data
         directory must be both readable and writable for the user that is
         running cupper.
+      cupperfile_syntax_error: |-
+        There is a syntax error in the following cupperfile. The syntax error 
+        message is reproduced below for convenience.
+      cupperfile_load_error: |-
+        There was an error loading a Cupperfile. The file being loaded
+        and the error message are shown below. This is usually caused by
+        a syntax error.

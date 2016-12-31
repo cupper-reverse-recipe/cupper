@@ -1,0 +1,38 @@
+# # -*- mode: ruby -*-
+# # # vi: set ft=ruby :
+#
+# The Cupperfile defines rules to be follow when the
+# recipe is being generated.
+#
+
+Cupper::Config.config do
+  Cupper::Config.configure
+
+  # The files considered sensible are the ones with
+  #   critical information on it. For example, a file
+  #   that has a pem key or a certificate, can`t be
+  #   treaded as a normal file.
+  # Specify the files, or extensions in the '.sensibles'
+  #   on the root of the Cupper project.
+  #
+  # Set this variable to true if you want to ignore
+  #   the .sensibles and copy all the files to the cookbook
+  sensible_files false
+
+  # The packages extracted from the target environment may
+  #   have a older version. If you want to create a recipe
+  #   that allows a downgrade flag to the package manager,
+  #   set this variable to true
+  allow_downgrade false
+
+  # Some packages on the environment may not have a source
+  #   repository related to. This packages will not appear
+  #   in the cookbook, because the package was installed
+  #   using other methods other than the default.
+  #
+  # Setting this variable to true will extract the packages
+  #   without a source repository. Please check the repositories
+  #   on the machine that the cookbook will run before running
+  #   the cookbook.
+  sourceless_packages false
+end

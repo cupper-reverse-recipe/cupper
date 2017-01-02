@@ -5,6 +5,7 @@
 #
 <% for @cb in @sources_list %>
 cookbook_file '<%= @cb.path %>' do
+  source '<%= @cb.source %>'
   owner '<%= @cb.owner %>'
   group '<%= @cb.group %>'
   mode '<%=  @cb.mode %>'
@@ -13,7 +14,9 @@ end
 
 <% for @package in @packages %>
 package '<%= @package.name %>' do
+  <% if Cupper::Config.package_version -%>
   version '<%= @package.version %>'
+  <% end -%>
   action :install
 end
 <% end %>

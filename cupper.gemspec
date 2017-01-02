@@ -25,4 +25,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'thor', '~> 0.19.1'
   spec.add_runtime_dependency 'ohai', '~> 8.15', '>= 8.15.1'
+  spec.add_runtime_dependency 'colorize', '0.8.1'
+  spec.add_runtime_dependency 'i18n', '0.7.0'
 end

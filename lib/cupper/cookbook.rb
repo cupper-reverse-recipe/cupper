@@ -6,7 +6,7 @@ module Cupper
   class Cookbook
     # TODO: Read config file to tell the project path and configs
     def initialize(cookbookname='default')
-      @cookbook_path    = "#{Dir.getwd}/#{cookbookname}"
+      @cookbook_path    = "#{Dir.getwd}/cookbooks/#{cookbookname}"
       @cookbook_files_path = "#{@cookbook_path}/files"
       @cookbook_recipes_path = "#{@cookbook_path}/recipes"
       @recipe_deps = [ # TODO this is hard code to reflect all_recipes. Refactor this later

@@ -24,9 +24,9 @@ describe Cupper::Project do
     expect(created).to be_truthy
   end
 
-  it 'should create a project with a CupperFile' do
+  it 'should create a project with a Cupperfile' do
     project.create
-    created = File.exist?("#{ project.dir }/#{ project.name }/CupperFile")
+    created = File.exist?("#{ project.dir }/#{ project.name }/Cupperfile")
     expect(created).to be_truthy
   end
 

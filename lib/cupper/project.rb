@@ -22,7 +22,12 @@ module Cupper
         'cookbooks'
       ]
       @files = [
-        'CupperFile'
+        'Cupperfile',
+      ]
+      # TODO: this should not be separated from the others
+      #   files. Try to get them together.
+      @hidden = [
+        'sensibles'
       ]
     end
 
@@ -34,6 +39,10 @@ module Cupper
       @subdirs.zip(@files).each do |dir, file|
         Structure.new(dir, "#{@dir}/#{@name}", nil, Entity::DIR).create
         Structure.new(file, "#{@dir}/#{@name}", file).create
+      end
+
+      @hidden.each do |file|
+        Structure.new(".#{file}", "#{@dir}/#{@name}", file).create
       end
     end
   end

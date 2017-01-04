@@ -13,9 +13,9 @@ module Cupper
         "#{cookbookname}::packages",
         "#{cookbookname}::cookbook_files",
         "#{cookbookname}::links",
+        "#{cookbookname}::users",
         "#{cookbookname}::groups",
         "#{cookbookname}::services",
-        "#{cookbookname}::users",
       ]
       setup_paths
     end

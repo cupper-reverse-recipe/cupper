@@ -2,6 +2,7 @@
 
 [![Join the chat at https://gitter.im/cupper-reverse-recipe/cupper](https://badges.gitter.im/cupper-reverse-recipe/cupper.svg)](https://gitter.im/cupper-reverse-recipe/cupper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Coverage Status](https://coveralls.io/repos/github/cupper-reverse-recipe/cupper/badge.svg?branch=master)](https://coveralls.io/github/cupper-reverse-recipe/cupper?branch=master)
+[![Build Status](https://travis-ci.org/cupper-reverse-recipe/cupper.svg?branch=master)](https://travis-ci.org/cupper-reverse-recipe/cupper)
 
 Taste your environment and creates a cookbook for it!
 Cupper is a command line tool that runs in some environment (see supoorted
